@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Editar Espécie {% endblock %}
+
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Editar Espécie</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}  <!-- Renderiza todos os campos do formulário -->
+        <button type="submit" class="btn btn-primary">Salvar Espécie</button>
+    </form>
+</div>
+{% endblock %}

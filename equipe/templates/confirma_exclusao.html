@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Página Inicial {% endblock %}
+
+{% block content %} 
+    <div class="container">
+           <div class="row">
+            <h1>Confirmar Exclusão</h1>
+            <p class="lead">Você tem certeza que deseja excluir o pesquisador <strong> {{ pesquisador.nome }} </strong>?</p>
+        </div>
+    <div class="row"> 
+    
+        <form action="" method="post">
+            {% csrf_token %}
+        <button type="submit" class="btn btn-primary py-3 btn-lg">Enviar</button>
+
+        </form>
+    </div>
+    </div>
+{% endblock %}

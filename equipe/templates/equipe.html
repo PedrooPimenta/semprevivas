@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} Página Inicial {% endblock %}
+
+{% block content %} 
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+        <h1> Equipe </h1>
+        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">    
+                <table class="table table-striped table-bordered">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th class="col-md-2" scope="col">Nome</th>
+                                  <th class="col-md-2"  scope="col">Titulação</th>
+                                  <th class="col-md-1" scope="col">Lattes</th>
+                                  <th class="col-md-1" scope="col">Linkedin</th>
+                                  <th class="col-md-1" scope="col">Research Gate</th>
+                                  <th class="col-md-1" scope="col">E-mail</th>
+                                  <th class="col-md-1" scope="col">Cargo</th>
+                                  <th class="col-md-1" scope="col">Editar</th>
+                                  <th class="col-md-1" scope="col">Apagar</th>
+                                </tr>
+                          </thead>
+                          <tbody>
+                          {% for pesquisador in pesquisadores %}
+                            <tr>
+                              <td>{{ pesquisador.nome }}</td>
+                              <td>{{ pesquisador.nivel }}</td>
+                              <td> <a href={{ pesquisador.lattes }}><i class="ai ai-lattes-square ai-2x"></i> </a></td>
+                              <td><a href={{ pesquisador.linkedin }}><i class="fa-brands fa-linkedin ai-2x"></i> </a></td>
+                              <td><a href={{ pesquisador.researchgate }}><i class="ai ai-researchgate-square ai-2x"></i> </a></td>
+                              <td><a href={{ pesquisador.email }}><i class="fa-solid fa-envelope ai-2x"></i></a> </td>
+                              <td>{{ pesquisador.get_cargo_display }}</td>
+                              <td><a href="{% url 'editar_pesquisador' pesquisador.id %}"><i class="fas fa-edit ai-2x"></i></a></td>
+                              <td><a href="{% url 'apagar_pesquisador' pesquisador.id %}"><i class="fas fa-trash ai-2x"></i></a></td>
+                            </tr>
+                          {% endfor %}
+                          </tbody>
+                        </table>
+                </div>
+            </div>  
+        </div>
+</div>
+{% endblock %}

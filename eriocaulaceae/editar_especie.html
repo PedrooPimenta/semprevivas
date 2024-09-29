@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} Editar Espécie {% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Editar Espécie</h1>
+    <form method="post">
+        {% csrf_token %}
+        <!-- Adicione campos de formulário para editar os detalhes da espécie -->
+        <div class="form-group">
+            <label for="scientificName">Scientific Name:</label>
+            <input type="text" class="form-control" id="scientificName" name="scientificName" value="{{ especie.scientificName }}">
+        </div>
+        <div class="form-group">
+            <label for="acceptedNameUsage">Accepted Name Usage:</label>
+            <input type="text" class="form-control" id="acceptedNameUsage" name="acceptedNameUsage" value="{{ especie.acceptedNameUsage }}">
+        </div>
+        <!-- Outros campos de formulário -->
+        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %} Editar Espécie {% endblock %}
+
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-fluid">
+
+<div class="container">
+    <h1>Apagar Espécie</h1>
+    <p>Tem certeza que deseja apagar a seguinte espécie?</p>
+    <dl class="row">
+        <dt class="col-sm-3">ID na Taxonomia:</dt>
+        <dd class="col-sm-9">{{ especie.taxonID }}</dd>
+        <dt class="col-sm-3">ID do Nome Aceito:</dt>
+        <dd class="col-sm-9">{{ especie.acceptedNameUsageID }}</dd>
+        <dt class="col-sm-3">taxonID:</dt>
+        <dd class="col-sm-9">{{ especie.taxonID }}</dd>
+        <dt class="col-sm-3">acceptedNameUsageID:</dt>
+        <dd class="col-sm-9">{{ especie.acceptedNameUsageID }}</dd>
+        <dt class="col-sm-3">parentNameUsageID:</dt>
+        <dd class="col-sm-9">{{ especie.parentNameUsageID }}</dd>
+        <dt class="col-sm-3">originalNameUsageID:</dt>
+        <dd class="col-sm-9">{{ especie.originalNameUsageID }}</dd>
+        <dt class="col-sm-3">scientificName:</dt>
+        <dd class="col-sm-9">{{ especie.scientificName }}</dd>
+        <dt class="col-sm-3">acceptedNameUsage:</dt>
+        <dd class="col-sm-9">{{ especie.acceptedNameUsage}}</dd>
+        <dt class="col-sm-3">parentNameUsage:</dt>
+        <dd class="col-sm-9">{{ especie.parentNameUsage}}</dd>
+        <dt class="col-sm-3">namePublishedIn:</dt>
+        <dd class="col-sm-9">{{ especie.namePublishedIn}}</dd>
+        <dt class="col-sm-3">namePublishedInYear:</dt>
+        <dd class="col-sm-9">{{ especie.namePublishedInYear}}</dd>
+        <dt class="col-sm-3">namePublishedIn:</dt>
+         <dd class="col-sm-9">{{ especie.namePublishedIn}}</dd>
+         <dt class="col-sm-3">kingdom:</dt>
+         <dd class="col-sm-9">{{ especie.kingdom}}</dd>
+         <dt class="col-sm-3">phylum:</dt>
+          <dd class="col-sm-9">{{ especie.phylum}}</dd>
+          <dt class="col-sm-3">classe:</dt>
+          <dd class="col-sm-9">{{ especie.classe}}</dd>
+          <dt class="col-sm-3">order:</dt>
+          <dd class="col-sm-9">{{ especie.order}}</dd>
+          <dt class="col-sm-3">family:</dt>
+          <dd class="col-sm-9">{{ especie.family}}</dd>
+          <dt class="col-sm-3">specificEpithet:</dt>
+          <dd class="col-sm-9">{{ especie.specificEpithet}}</dd>
+          <dt class="col-sm-3">infraspecificEpithet:</dt>
+          <dd class="col-sm-9">{{ especie.infraspecificEpithet}}</dd>
+          <dt class="col-sm-3">taxonRank:</dt>
+          <dd class="col-sm-9">{{ especie.taxonRank}}</dd>
+          <dt class="col-sm-3">scientificNameAuthorship:</dt>
+          <dd class="col-sm-9">{{ especie.scientificNameAuthorship}}</dd>
+          <dt class="col-sm-3">taxonomicStatus:</dt>
+          <dd class="col-sm-9">{{ especie.taxonomicStatus}}</dd>
+          <dt class="col-sm-3">nomenclaturalStatus:</dt>
+          <dd class="col-sm-9">{{ especie.nomenclaturalStatus}}</dd>
+          <dt class="col-sm-3">modified:</dt>
+          <dd class="col-sm-9">{{ especie.modified}}</dd>
+          <dt class="col-sm-3">bibliographicCitation:</dt>
+          <dd class="col-sm-9">{{ especie.bibliographicCitation}}</dd>
+          <dt class="col-sm-3">references:</dt>
+          <dd class="col-sm-9">{{ especie.references}}</dd>
+          </tr>
+        
+        
+        
+        
+        <!-- Adicione os outros campos aqui -->
+    </dl>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Apagar</button>
+    </form>
+</div>
+
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %} Página Inicial {% endblock %}
+{% load crispy_forms_tags %}
+
+{% block content %} 
+<div class="container">
+
+    <div class="row">
+        <div class="col-6">
+    <h2>Ocorreu um erro:</h2>
+    <p>{{ mensagem }}</p>        </div>
+    
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}

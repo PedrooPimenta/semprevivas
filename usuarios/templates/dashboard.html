@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} Dashboard {% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block content %} 
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4 col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Usuário</h5>
+                    <p class="card-text lead mt-4">Olá, {{ user.username | default:'Visitante' }}!</p>
+                </div> <!-- Card Body -->
+            </div> <!-- Card  -->
+        </div> <!-- Card col-md-4 -->
+        <div class="col-md-4 col-6" >
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Clique para Alterar a Senha</h5>
+                    <p class="card-text lead">
+                                             {% if user.is_authenticated %}
+                                                               <form id="logout-form" method="post" action="{% url 'altera_senha' %}">
+                                                                 {% csrf_token %}
+                                                                 <button type="submit" class="btn btn-primary">Alterar a Senha</button>
+                                                               </form>
+                                             {% else %}
+                                                 <a href="{% url 'login' %}">Login</a>
+                                             {% endif %}
+                </div> <!-- Card Body -->
+            </div> <!-- Card  -->
+        </div> <!-- Card col-md-4 -->
+        <div class="col-md-4 col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Clique para Sair</h5>
+                    <p class="card-text ">
+                            {% if user.is_authenticated %}
+                                              <form id="logout-form" method="post" action="{% url 'logout' %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary">Logout</button>
+                                              </form>
+                                            {% else %}
+                                                <a href="{% url 'login' %}">Login</a>
+                                            {% endif %}
+                    </p>
+                </div>  <!-- Card Body -->
+            </div> <!-- Card  -->
+        </div> <!-- Card col-md-4 -->
+    </div>  <!-- row -->
+</div>  <!-- container -->
+
+
+    
+
+{% endblock %}

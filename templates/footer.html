@@ -1,0 +1,33 @@
+
+<footer class="py-3 bg-info text-white">
+<!--
+  <div class="container">
+    <ul class="nav justify-content-center">
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-light">About</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Contact</a></li>
+      {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-2 text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            User: {{ user.get_username }}
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form id="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </li>
+      {% else %}
+        <li class="nav-item"><a href="{% url 'login' %}?next={{ request.path }}" class="nav-link px-2 text-light">Login</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  -->
+</footer>
+
+

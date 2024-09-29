@@ -1,0 +1,53 @@
+
+
+{% extends 'base.html' %}
+
+{% block title %} Resultados da Busca {% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Busca de Espécies</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="termo_busca">Termo de Busca:</label>
+            <input type="text" class="form-control" id="termo_busca" name="termo_busca" value="{{ termo_busca }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    {% if especies %}
+    <h2>Resultados da Busca</h2>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Scientific Name</th>
+                    <th scope="col">Accepted Name Usage</th>
+                    <th scope="col">Editar</th> <!-- Adicione esta coluna para as ações de edição -->
+                    <th scope="col">Apagar</th> <!-- Adicione esta coluna para as ações de edição -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for especie in especies %}
+                <tr>
+                    <td>{{ especie.scientificName }}</td>
+                    <td>{{ especie.acceptedNameUsage }}</td>
+                    <td>
+                        <a href="{% url 'editar_especie' especie.id %}" class="btn btn-primary">Editar</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'apagar_especie' especie.id %}" class="btn btn-danger">Apagar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Nenhum resultado encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
