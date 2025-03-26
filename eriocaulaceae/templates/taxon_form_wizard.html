@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4 p-4 rounded shadow-lg bg-light">
+    <h2 class="text-center mb-4">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</h2>
+
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <div class="d-flex justify-content-between">
+            {% if wizard.steps.prev %}
+                <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Voltar</button>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Próximo</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

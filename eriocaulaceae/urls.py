@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .forms import TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form
 
 urlpatterns =[
     path('',views.eriocaulaceae_home, name='eriocaulaceae_home'),
@@ -10,4 +11,7 @@ urlpatterns =[
     path('editar-especie/<int:especie_id>/', views.editar_especie, name='editar_especie'), 
     path('apagar-especie/<int:especie_id>/', views.apagar_especie, name='apagar_especie'),
     path('adicionar-especie/', views.adicionar_especie, name='adicionar_especie'),
+     path("adicionar-taxon/", views.TaxonWizard.as_view(
+        [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form]
+    ), name="adicionar_taxon"),
     ]

@@ -6,6 +6,7 @@ WORKDIR /semprevivas
 # Copie os arquivos de código fonte do Django para o contêiner
 COPY . /semprevivas
 
+RUN pip install --upgrade pip
 # Instale as dependências do aplicativo
 RUN pip install -r requirements.txt
 

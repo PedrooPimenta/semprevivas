@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
-   <div class="container">
-       <div class="row">
-           <div class="col-6">
-               <h1>Registro de novo usuário</h1>
-           </div>
-      </div>
-      
-        <div class="row">
-            <div class="col-6">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                
-                    <input class="btn btn-primary" type="submit" value="Register">
-                </form>
-           </div>
-      </div>
-              <div class="row">
-                  <div class="col-6">
-                        <a href="{% url 'login' %}">Back to login</a>
-                       </div>
-                  </div>
+<div class="row justify-content-center align-items-center min-vh-90 py-3">
+    <div class="col-md-4 col-12 bg-light p-5 rounded shadow-sm">
+        <h2 class="text-center mb-4">Criar uma conta</h2>
+
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                Por favor, corrija os erros abaixo:
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group"></div>
+            {{ form|crispy }}
+
+            <button type="submit" class="btn btn-primary btn-block py-3 mt-3">Cadastrar</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login</a></p>
+        </div>
+    </div>
 </div>
 {% endblock %}

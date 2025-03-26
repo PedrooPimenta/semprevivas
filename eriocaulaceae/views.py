@@ -1,9 +1,9 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from django.core.paginator import Paginator
-
+from django.http import HttpResponse
 
 from .forms import TaxonForm
-
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from .forms import CSVUploadForm
@@ -13,6 +13,10 @@ from io import TextIOWrapper
 import pandas as pd
 from .models import Taxon
 from django.db.models import Q
+from django.core.files.storage import FileSystemStorage
+from .forms import TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form
+from formtools.wizard.views import SessionWizardView
+
 import json 
 
 
@@ -173,3 +177,26 @@ def upload_csv(request):
     else:
         form = CSVUploadForm()
     return render(request, 'upload_csv.html', {'form': form})
+
+
+
+class TaxonWizard(SessionWizardView):
+    form_list = [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form, TaxonStep9Form]
+    template_name = "taxon_form_wizard.html"
+    file_storage = FileSystemStorage(location='/tmp')
+
+    def done(self, form_list, **kwargs):
+        data = {}
+        for form in form_list:
+            data.update(form.cleaned_data)
+
+        taxon = Taxon.objects.create(**data)
+
+        messages.success(self.request, 'Cadastro realizado com sucesso.')
+
+        form_list = [form.__class__() for form in form_list]
+
+        return render(self.request, self.template_name, {
+            'wizard': self,
+            'form_list': form_list
+        })

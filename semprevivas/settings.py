@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "equipe",
     "usuarios",
     "eriocaulaceae",
+     'formtools'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

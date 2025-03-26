@@ -1,43 +1,50 @@
 {% extends 'base.html' %}
 
-{% block title %} Página Inicial {% endblock %}
+
 {% load crispy_forms_tags %}
 
-{% block content %} 
-<div class="container">
-    <div class="row justify-content-center text-center">
-            <div class="col-6">
-                <h2>Login</h2>
-            </div>
-    </div>
-    <div class="row align-center justify-content-center">
-        <div class="col-12">
-                          {% if form.errors %}
-                            <p class="lead">Seu username e sua senha não está corretas. Tente novamente</p>
-                          {% endif %}
-                        
-                          {% if next %}
-                            {% if user.is_authenticated %}
-                              <p>Your account doesn't have access to this page. To proceed,
-                              please login with an account that has access.</p>
-                            {% else %}
-                              <p>Please login to see this page.</p>
-                            {% endif %}
-                          {% endif %}
-        </div>
-    </div>
-    <div class="row justify-content-center text-center">
-        <div class="col-3">
-            <form method="post">
-              {% csrf_token %}
-              {{ form|crispy }}
-              <button type="submit" class="btn btn-primary py-3 btn-lg">Login</button>
-            </form>
-            
-              {# Assumes you set up the password_reset view in your URLconf #}
-              <p class="lead"><a href="{% url 'reset_password' %}">Perdeu a senha</a></p>
-            
+{% block content %}
+<div class="">
+    <div class="row justify-content-center align-items-center min-vh-90 py-5">
+        <div class="col-md-4 col-12 bg-light p-5 rounded shadow-sm">
+            <h2 class="text-center mb-4">Bem-vindo de volta!</h2>
 
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Seu nome de usuário ou senha estão incorretos. Tente novamente.
+                </div>
+            {% endif %}
+
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <div class="alert alert-warning">
+                        Sua conta não tem acesso a esta página. Por favor, faça login com uma conta com permissão.
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        Você precisa estar logado para acessar esta página. Faça login abaixo.
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Nome de usuário</label>
+                    <input type="text" class="form-control" id="username" name="username" required placeholder="ex: admin">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" class="form-control" id="password" name="password" required placeholder="******">
+               
+
+                <button type="submit" class="btn btn-primary btn-block py-3 mt-3">Entrar</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <p><a href="{% url 'reset_password' %}">Esqueceu sua senha?</a></p>
+                <p>Não tem uma conta? <a href="{% url 'register' %}">Crie uma agora</a></p>
+            </div>
         </div>
     </div>
 </div>

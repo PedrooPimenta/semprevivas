@@ -18,29 +18,28 @@ from django.core.exceptions import PermissionDenied
 from .forms import CustomUserCreationForm
 
 def register(request):
-
     if request.method == "GET":
-
+        # Se for um GET, renderize o formulário vazio
         return render(
-
             request, "registration/register.html",
-
-            {"form": CustomUserCreationForm}
-
+            {"form": CustomUserCreationForm()}
         )
 
     elif request.method == "POST":
-
+        # Quando for um POST, processe o formulário
         form = CustomUserCreationForm(request.POST)
 
         if form.is_valid():
+            user = form.save()  # Salva o novo usuário
+            login(request, user)  # Faz login automaticamente
+            return redirect(reverse("dashboard"))  # Redireciona para o dashboard
 
-            user = form.save()
-
-            login(request, user)
-
-            return redirect(reverse("dashboard"))
-
+        else:
+            # Se o formulário for inválido, renderize novamente o formulário com erros
+            return render(
+                request, "registration/register.html", 
+                {"form": form}  # Passa o formulário com os erros
+            )
 
 
 class CustomPasswordChangeView(PasswordChangeView):
