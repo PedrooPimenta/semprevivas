@@ -46,19 +46,13 @@
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="{% url 'buscar_especies' %}">
-                  <i class="bi bi-search fs-5 me-2"></i> Buscar
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url 'adicionar_especie' %}">
+                <a class="dropdown-item" href="{% url 'adicionar_taxon' %}">
                   <i class="bi bi-plus-circle fs-5 me-2"></i> Adicionar
                 </a>
               </li>
             </ul>
           </li>
         </ul>
-        <a href="{% url 'adicionar_taxon' %}" class="btn btn-primary">Adicionar Taxon</a>
         <div class="d-flex align-items-center ms-auto">
           <div class="dropdown">
             <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; text-decoration: none; border: none; outline: none;">

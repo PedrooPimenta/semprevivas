@@ -1,10 +1,10 @@
 
-services:
-  web:
-    build: .
-    volumes:
-      - .:/semprevivas  # Monta o diretório atual
-    ports:
-      - "8000:8000"  # Mapeia a porta 8000 do contêiner para a máquina host
-    environment:
-      - PYTHONUNBUFFERED=1  # Para facilitar o logging
+  services:
+    web:
+      build: .
+      volumes:
+        - .:/semprevivas  # Monta o diretório atual
+      ports:
+        - "8000:8000"  # Mapeia a porta 8000 do contêiner para a máquina host
+      environment:
+        - PYTHONUNBUFFERED=1  # Para facilitar o logging

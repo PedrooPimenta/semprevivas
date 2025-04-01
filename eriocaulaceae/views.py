@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from .forms import CSVUploadForm
 import csv
-import io  # Importe o módulo io para lidar com arquivos de texto
+import io  
 from io import TextIOWrapper
 import pandas as pd
 from .models import Taxon
@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.core.files.storage import FileSystemStorage
 from .forms import TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form
 from formtools.wizard.views import SessionWizardView
+from django.db.models import Q
 
 import json 
 
@@ -30,48 +31,42 @@ def eriocaulaceae_adicionar(request):
         form = TaxonForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('eriocaulaceae_home')  # Redirecionar para a página de lista de taxons após adicionar com sucesso
+            return redirect('eriocaulaceae_home')  #
     else:
         form = TaxonForm()
     return render(request, 'eriocaulaceae_adicionar.html', {'form': form})
 
 @login_required
 def listar_especies(request):
-    especies = Taxon.objects.all()
-    
-    paginator = Paginator(especies, 5)  # 10 por página
-    page_number = request.GET.get('page')  # Obtendo o número da página da URL
-    page_obj = paginator.get_page(page_number)  # Obtendo a página atual
+    # Pega o termo de busca da query string (GET)
+    termo_busca = request.GET.get('q', '')
 
+    # Filtra os resultados com base no termo de busca
+    queryset = Taxon.objects.all()
+
+    if termo_busca:
+        queryset = queryset.filter(
+            Q(scientificName__icontains=termo_busca) |
+            Q(acceptedNameUsage__icontains=termo_busca)
+        )
+
+    # Paginação
+    paginator = Paginator(queryset, 5)  # Exibe 5 itens por página
+    page_number = request.GET.get('page')  # Número da página
+    page_obj = paginator.get_page(page_number)
+
+    # Dicionário de estados
     estados = {
-        'AL': 'Alagoas',
-        'AP': 'Amapá',
-        'AM': 'Amazonas',
-        'BA': 'Bahia',
-        'CE': 'Ceará',
-        'DF': 'Distrito Federal',
-        'ES': 'Espírito Santo',
-        'GO': 'Goiás',
-        'MA': 'Maranhão',
-        'MT': 'Mato Grosso',
-        'MS': 'Mato Grosso do Sul',
-        'MG': 'Minas Gerais',
-        'PA': 'Pará',
-        'PB': 'Paraíba',
-        'PR': 'Paraná',
-        'PE': 'Pernambuco',
-        'PI': 'Piauí',
-        'RJ': 'Rio de Janeiro',
-        'RN': 'Rio Grande do Norte',
-        'RS': 'Rio Grande do Sul',
-        'RO': 'Rondônia',
-        'RR': 'Roraima',
-        'SC': 'Santa Catarina',
-        'SP': 'São Paulo',
-        'SE': 'Sergipe',
-        'TO': 'Tocantins',
+        'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
+        'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
+        'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
+        'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
+        'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
+        'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
+        'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
     }
 
+    # Processar estado para nomes completos
     for taxon in page_obj:
         if taxon.estado is not None:
             nomes_completos = [estados.get(sigla) for sigla in eval(taxon.estado)]
@@ -79,7 +74,10 @@ def listar_especies(request):
         else:
             taxon.estado = None
 
-    return render(request, 'listar_especies.html', {'page_obj': page_obj})
+    # Passar os dados para o template
+    return render(request, 'listar_especies.html', {'page_obj': page_obj, 'termo_busca': termo_busca})
+        
+    
 
 
 
@@ -102,7 +100,7 @@ def editar_especie(request, especie_id):
         form = TaxonForm(request.POST, instance=especie)
         if form.is_valid():
             form.save()
-            return redirect('buscar_especies')  # Redireciona de volta para a página de busca após a edição
+            return redirect('buscar_especies')  
     else:
         form = TaxonForm(instance=especie)
     return render(request, 'editar_especie.html', {'form': form})
@@ -113,7 +111,7 @@ def apagar_especie(request, especie_id):
     especie = get_object_or_404(Taxon, id=especie_id)
     if request.method == 'POST':
         especie.delete()
-        return redirect('listar_especies')  # Redireciona de volta para a página de busca após a exclusão
+        return redirect('listar_especies')  
     else:
         return render(request, 'apagar_especie.html', {'especie': especie})
 
@@ -124,7 +122,7 @@ def adicionar_especie(request):
         form = TaxonForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('listar_especies')  # Redireciona para a página de sucesso após adicionar o Taxon
+            return redirect('listar_especies')  
     else:
         form = TaxonForm()
     return render(request, 'adicionar_especie.html', {'form': form})
@@ -199,4 +197,69 @@ class TaxonWizard(SessionWizardView):
         return render(self.request, self.template_name, {
             'wizard': self,
             'form_list': form_list
+        })
+
+
+class EditTaxonWizard(SessionWizardView):
+    form_list = [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form, TaxonStep9Form]
+    template_name = "edit_taxon_wizard.html"
+    file_storage = FileSystemStorage(location='/tmp')
+    def get_wizard_kwargs(self, step):
+        """
+        Garante que o 'pk' seja passado corretamente para o método 'done'.
+        """
+        kwargs = super().get_wizard_kwargs(step)
+        kwargs['pk'] = self.kwargs.get('pk')  # Captura o 'pk' da URL
+        return kwargs
+    def get_form_kwargs(self, step):
+        kwargs = super().get_form_kwargs(step)
+        taxon_id = self.kwargs.get('pk')
+        if taxon_id:
+            taxon = Taxon.objects.get(pk=taxon_id)
+            kwargs['instance'] = taxon
+        return kwargs
+
+
+    def done(self, form_list, **kwargs):
+        data = {}
+        for form in form_list:
+            data.update(form.cleaned_data)
+
+        taxon_id = self.kwargs.get('pk')
+        if not taxon_id:
+            raise ValueError("ID do táxon não encontrado na URL")
+        taxon = Taxon.objects.get(pk=taxon_id)
+        taxon.taxonID = data['taxonID']
+        taxon.acceptedNameUsageID = data['acceptedNameUsageID']
+        taxon.parentNameUsageID = data['parentNameUsageID']
+        taxon.originalNameUsageID = data['originalNameUsageID']
+        taxon.scientificName = data['scientificName']
+        taxon.acceptedNameUsage = data['acceptedNameUsage']
+        taxon.parentNameUsage = data['parentNameUsage']
+        taxon.namePublishedIn = data['namePublishedIn']
+        taxon.namePublishedInYear = data['namePublishedInYear']
+        taxon.higherClassification = data['higherClassification']
+        taxon.kingdom = data['kingdom']
+        taxon.phylum = data['phylum']
+        taxon.classe = data['classe']
+        taxon.order = data['order']
+        taxon.family = data['family']
+        taxon.genus = data['genus']
+        taxon.specificEpithet = data['specificEpithet']
+        taxon.infraspecificEpithet = data['infraspecificEpithet']
+        taxon.taxonRank = data['taxonRank']
+        taxon.bibliographicCitation = data['bibliographicCitation']
+        taxon.references = data['references']
+        taxon.foto = data['foto']
+
+        taxon.save()
+
+        messages.success(self.request, 'Atualização realizada com sucesso.')
+
+        form_list = [form.__class__() for form in form_list]
+
+        return render(self.request, self.template_name, {
+            'wizard': self,
+            'form_list': form_list,
+            'taxon': taxon,
         })

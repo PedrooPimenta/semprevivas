@@ -35,7 +35,7 @@ class TaxonForm(forms.ModelForm):
                     ('SP', 'São Paulo'),
                     ('SE', 'Sergipe'),
                     ('TO', 'Tocantins'),
-                        # Adicione mais estados conforme necessário
+                        
                    ),
             required=False,
             widget=forms.CheckboxSelectMultiple

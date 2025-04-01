@@ -14,4 +14,7 @@ urlpatterns =[
      path("adicionar-taxon/", views.TaxonWizard.as_view(
         [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form]
     ), name="adicionar_taxon"),
+    path("editar-taxon/<int:pk>/", views.EditTaxonWizard.as_view(
+        [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form]
+    ), name="editar_taxon"),
     ]

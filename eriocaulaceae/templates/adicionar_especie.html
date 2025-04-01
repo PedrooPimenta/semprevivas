@@ -10,31 +10,6 @@
     <h1>Adicionar Espécie</h1>
     <form method="post">
         {% csrf_token %}
-        <h3>ID: {{ form.taxonID }}</h3>
-        <h3>AcceptedNameUsageID: {{ form.acceptedNameUsageID }}</h3>
-        <h3>ParentNameUsageID: {{ form.parentNameUsageID }}</h3>
-        <h3>OriginalNameUsageID: {{ form.originalNameUsageID }}</h3>
-        <h3>ScientificName: {{ form.scientificName }}</h3>
-        <h3>AcceptedNameUsage: {{ form.acceptedNameUsage }}</h3>
-        <h3>ParentNameUsage: {{ form.parentNameUsage }}</h3>
-        <h3>NamePublishedIn: {{ form.namePublishedIn }}</h3>
-        <h3>NamePublishedInYear: {{ form.namePublishedInYear }}</h3>
-        <h3>HigherClassification: {{ form.higherClassification }}</h3>
-        <h3>Kingdom: {{ form.kingdom }}</h3>
-        <h3>Phylum: {{ form.phylum }}</h3>
-        <h3>Classe: {{ form.classe }}</h3>
-        <h3>Order: {{ form.order }}</h3>
-        <h3>Family: {{ form.family }}</h3>
-        <h3>Genus: {{ form.genus }}</h3>
-        <h3>SpecificEpithet: {{ form.specificEpithet }}</h3>
-        <h3>InfraspecificEpithet: {{ form.infraspecificEpithet }}</h3>
-        <h3>TaxonRank: {{ form.taxonRank }}</h3>
-        <h3>ScientificNameAuthorship: {{ form.scientificNameAuthorship }}</h3>
-        <h3>TaxonomicStatus: {{ form.taxonomicStatus }}</h3>
-        <h3>NomenclaturalStatus: {{ form.nomenclaturalStatus }}</h3>
-        <h3>Modified: {{ form.modified }}</h3>
-        <h3>BibliographicCitation: {{ form.bibliographicCitation }}</h3>
-        <h3>References: {{ form.references }}</h3>
         {% crispy form %}
         
         <button type="submit" class="btn btn-primary">Adicionar Espécie</button>
