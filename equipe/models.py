@@ -26,14 +26,12 @@ class Pesquisador(models.Model):
     ativo = models.BooleanField(default=False)
     
     # cargo na instituição
-    CARGO = {
-    "ALUNO": "Aluno",
-    "PROFESSOR": "Professor",
-    "TECNICO": "Técnico",
-    }
-
-    # cargo na instituição
-    cargo = models.CharField(max_length=10, choices=CARGO, verbose_name="Cargo")
+CARGO_CHOICES = [
+        ("ALUNO", "Aluno"),
+        ("PROFESSOR", "Professor"),
+        ("TECNICO", "Técnico"),
+    ]
+cargo = models.CharField(max_length=10, choices=CARGO_CHOICES, verbose_name="Cargo")
     
-    def __str__(self):
+def __str__(self):
         return f"{self.nome} ({self.nivel})"

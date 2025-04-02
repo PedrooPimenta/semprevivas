@@ -1,59 +1,60 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm w-100">
   <div class="container-fluid">
-      <img src="{% static 'logo2.svg' %}" alt="logo" width="120" height="auto" class="me-2">
+      <img src="{% static 'logo2.svg' %}" alt="Company Logo" width="120" height="auto" class="me-2">
     
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-      {% if user.is_authenticated %}
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link text-dark" href="{% url 'home' %}">
-              <i class="bi bi-house-fill fs-4"></i> Home
-            </a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" href="#" id="equipeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-people fs-4"></i> Equipe
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="equipeDropdown">
-              <li>
-                <a class="dropdown-item" href="{% url 'listar_equipe' %}">
-                  <i class="bi bi-list-ul fs-5 me-2"></i> Listar Equipe
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url 'adicionar_pesquisador' %}">
-                  <i class="bi bi-person-plus fs-5 me-2"></i> Adicionar Pesquisador
-                </a>
-              </li>
-            </ul>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-dark" href="#" id="especiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-flower1 fs-4"></i> Eriocaulaceae
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="especiesDropdown">
-              <li>
-                <a class="dropdown-item" href="{% url 'listar_especies' %}">
-                  <i class="bi bi-list-ul fs-5 me-2"></i> Listar Espécies
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url 'adicionar_taxon' %}">
-                  <i class="bi bi-plus-circle fs-5 me-2"></i> Adicionar
-                </a>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <div class="d-flex align-items-center ms-auto">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item active">
+          <a class="nav-link text-dark" href="{% url 'home' %}">
+            <i class="bi bi-house-fill fs-4"></i> Home
+          </a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark" href="#" id="especiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-flower1 fs-4"></i> Eriocaulaceae
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="especiesDropdown">
+            <li>
+              <a class="dropdown-item" href="{% url 'listar_especies' %}">
+                <i class="bi bi-list-ul fs-5 me-2"></i> Listar Espécies
+              </a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+              <a class="dropdown-item" href="{% url 'adicionar_taxon' %}">
+                <i class="bi bi-plus-circle fs-5 me-2"></i> Adicionar
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-dark" href="#" id="equipeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-people fs-4"></i> Equipe
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="equipeDropdown">
+            <li>
+              <a class="dropdown-item" href="{% url 'listar_equipe' %}">
+                <i class="bi bi-list-ul fs-5 me-2"></i> Listar Equipe
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'adicionar_pesquisador' %}">
+                <i class="bi bi-person-plus fs-5 me-2"></i> Adicionar Pesquisador
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+      </ul>
+      <div class="d-flex align-items-center ms-auto">
+        {% if user.is_authenticated %}
           <div class="dropdown">
             <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; text-decoration: none; border: none; outline: none;">
               <i class="bi bi-person-fill fs-4 me-2"></i> 
@@ -76,14 +77,11 @@
               </li>
             </ul>
           </div>
-        </div>
-        
-      {% else %}
-        <div class="d-flex align-items-center ms-auto">
+        {% else %}
           <span class="me-3 fw-bold text-dark">Olá, visitante!</span>
           <a style="background-color: #01949A;" href="{% url 'login' %}" class="btn btn-info text-white rounded-pill px-4 py-2 ms-3">Entrar</a>
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     </div>
   </div>
 </nav>

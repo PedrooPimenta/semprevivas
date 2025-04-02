@@ -5,19 +5,20 @@
     <form action="?" method="GET" class="mt-4">
         <div class="row">
             <div class="col-md-2">
-                <input type="text" name="q" value="{{ termo_busca }}" class="form-control p-1 btn-sm" autocomplete="off" placeholder="Buscar">
+                <input type="text" name="q" value="{{ termo_busca }}" class="form-control p-1 btn-sm" autocomplete="off"
+                    placeholder="Buscar">
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-md-1">
-                <button type="submit" class="btn btn-info btn-sm w-100">Pesquisar</button>
+                <button type="submit" class="btn btn-primary btn-sm w-100">Pesquisar</button>
             </div>
             <div class="col-md-1">
                 <a href="{% url 'listar_especies' %}" class="btn btn-secondary btn-sm w-100">Limpar</a>
             </div>
         </div>
-        
-      
+
+
     </form>
 
 
@@ -26,9 +27,9 @@
             <thead>
                 <tr>
                     <th scope="col">Taxon</th>
-                  
+
                     <th scope="col">Scientific Name</th>
-                   
+
                     <th scope="col">Name Published In</th>
                     <th scope="col">Name Published In Year</th>
                     <th scope="col">Higher Classification</th>
@@ -41,96 +42,138 @@
             </thead>
             <tbody>
                 {% for especie in page_obj %}
-                    <tr>
-                        <td>{{ especie.taxonID }}</td>
-                       
-                        <td>{{ especie.scientificName }}</td>
-                      
-                        <td>{{ especie.namePublishedIn }}</td>
-                        <td>{{ especie.namePublishedInYear }}</td>
-                        <td>{{ especie.higherClassification }}</td>
-                        <td>{{ especie.kingdom }}</td>
-                        <td>{{ especie.family }}</td>
-                        <td>{{ especie.genus }}</td>
-                        <td>{{ especie.scientificNameAuthorship }}</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalEspecie{{ especie.id }}">
-                                Ver mais
-                            </button>
-                        </td>
-                    </tr>
+                <tr>
+                    <td>{{ especie.taxonID }}</td>
 
-                    <div class="modal fade" id="modalEspecie{{ especie.id }}" tabindex="-1" role="dialog" aria-labelledby="modalLabel{{ especie.id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalLabel{{ especie.id }}">Detalhes da Espécie</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <ul class="nav nav-tabs" id="modalTabs{{ especie.id }}" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="geral-tab{{ especie.id }}" data-toggle="tab" href="#geral{{ especie.id }}" role="tab">Geral</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="taxonomia-tab{{ especie.id }}" data-toggle="tab" href="#taxonomia{{ especie.id }}" role="tab">Taxon</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="referencias-tab{{ especie.id }}" data-toggle="tab" href="#referencias{{ especie.id }}" role="tab">Referências</a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content mt-3">
-                                        <div class="tab-pane fade show active" id="geral{{ especie.id }}" role="tabpanel">
-                                            <p><strong>Taxon ID:</strong> {{ especie.taxonID }}</p>
-                                            <p><strong>Accepted Name Usage ID:</strong> {{ especie.acceptedNameUsageID }}</p>
-                                            <p><strong>Parent Name Usage ID:</strong> {{ especie.parentNameUsageID }}</p>
-                                            <p><strong>Scientific Name:</strong> {{ especie.scientificName }}</p>
-                                            <p><strong>Accepted Name Usage:</strong> {{ especie.acceptedNameUsage }}</p>
-                                            <p><strong>Name Published In:</strong> {{ especie.namePublishedIn }}</p>
-                                            <p><strong>Name Published In Year:</strong> {{ especie.namePublishedInYear }}</p>
-                                        </div>
-                                        <div class="tab-pane fade" id="taxonomia{{ especie.id }}" role="tabpanel">
-                                            <p><strong>Higher Classification:</strong> {{ especie.higherClassification }}</p>
-                                            <p><strong>Kingdom:</strong> {{ especie.kingdom }}</p>
-                                            <p><strong>Phylum:</strong> {{ especie.phylum }}</p>
-                                            <p><strong>Classe:</strong> {{ especie.classe }}</p>
-                                            <p><strong>Order:</strong> {{ especie.order }}</p>
-                                            <p><strong>Family:</strong> {{ especie.family }}</p>
-                                            <p><strong>Genus:</strong> {{ especie.genus }}</p>
-                                            <p><strong>Specific Epithet:</strong> {{ especie.specificEpithet }}</p>
-                                            <p><strong>Infra Specific Epithet:</strong> {{ especie.infraspecificEpithet }}</p>
-                                            <p><strong>Taxon Rank:</strong> {{ especie.taxonRank }}</p>
-                                            <p><strong>Scientific Name Authorship:</strong> {{ especie.scientificNameAuthorship }}</p>
-                                            <p><strong>Taxonomic Status:</strong> {{ especie.taxonomicStatus }}</p>
-                                        </div>
-                                        <div class="tab-pane fade" id="referencias{{ especie.id }}" role="tabpanel">
-                                            <p><strong>Descrição Morfológica:</strong> {{ especie.descricao_morfologica }}</p>
-                                            <p><strong>Chave Identificação:</strong> {{ especie.chave_identificacao }}</p>
-                                            <p><strong>Comentários:</strong> {{ especie.comentarios }}</p>
-                                            <p><strong>Estado:</strong> 
-                                                <ul>
-                                                    {% for estado in especie.estado %}
-                                                        <li>{{ estado }}</li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </p>
-                                            <p><strong>Nomenclatural Status:</strong> {{ especie.nomenclaturalStatus }}</p>
-                                            <p><strong>Bibliographic Citation:</strong> {{ especie.bibliographicCitation }}</p>
-                                            <p><strong>References:</strong> {{ especie.references }}</p>
-                                        </div>
+                    <td>{{ especie.scientificName }}</td>
+
+                    <td>{{ especie.namePublishedIn }}</td>
+                    <td>{{ especie.namePublishedInYear }}</td>
+                    <td>{{ especie.higherClassification }}</td>
+                    <td>{{ especie.kingdom }}</td>
+                    <td>{{ especie.family }}</td>
+                    <td>{{ especie.genus }}</td>
+                    <td>{{ especie.scientificNameAuthorship }}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal"
+                            data-target="#modalEspecie{{ especie.id }}">
+                            Ver mais
+                        </button>
+                    </td>
+                </tr>
+
+                <div class="modal fade" id="modalEspecie{{ especie.id }}" tabindex="-1" role="dialog"
+                    aria-labelledby="modalLabel{{ especie.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel{{ especie.id }}">Detalhes da Espécie</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="nav nav-tabs" id="modalTabs{{ especie.id }}" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="geral-tab{{ especie.id }}" data-toggle="tab"
+                                            href="#geral{{ especie.id }}" role="tab">Geral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="taxonomia-tab{{ especie.id }}" data-toggle="tab"
+                                            href="#taxonomia{{ especie.id }}" role="tab">Taxon</a>
+                                    </li>
+                                    <li class="nav-item" id="referencias-tab{{ especie.id }}">
+                                        <a class="nav-link" data-toggle="tab"
+                                            href="#descricaoMorfologica{{ especie.id }}" role="tab">Descrição
+                                            Morfológica</a>
+                                    </li>
+                                    <li class="nav-item" id="referencias-tab{{ especie.id }}">
+                                        <a class="nav-link" data-toggle="tab" href="#chaveIdentificacao{{ especie.id }}"
+                                            role="tab">Chave Identificação</a>
+                                    </li>
+                                    <li class="nav-item" id="referencias-tab{{ especie.id }}">
+                                        <a class="nav-link" data-toggle="tab" href="#foto{{ especie.id }}"
+                                            role="tab">Fotos</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="referencias-tab{{ especie.id }}" data-toggle="tab"
+                                            href="#referencias{{ especie.id }}" role="tab">Referências</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content mt-3">
+                                    <div class="tab-pane fade show active" id="geral{{ especie.id }}" role="tabpanel">
+                                        <p><strong>Taxon ID:</strong> {{ especie.taxonID }}</p>
+                                        <p><strong>Accepted Name Usage ID:</strong> {{ especie.acceptedNameUsageID }}
+                                        </p>
+                                        <p><strong>Parent Name Usage ID:</strong> {{ especie.parentNameUsageID }}</p>
+                                        <p><strong>Scientific Name:</strong> {{ especie.scientificName }}</p>
+                                        <p><strong>Accepted Name Usage:</strong> {{ especie.acceptedNameUsage }}</p>
+                                        <p><strong>Name Published In:</strong> {{ especie.namePublishedIn }}</p>
+                                        <p><strong>Name Published In Year:</strong> {{ especie.namePublishedInYear }}
+                                        </p>
                                     </div>
+                                    <div class="tab-pane fade" id="taxonomia{{ especie.id }}" role="tabpanel">
+                                        <p><strong>Higher Classification:</strong> {{ especie.higherClassification }}
+                                        </p>
+                                        <p><strong>Kingdom:</strong> {{ especie.kingdom }}</p>
+                                        <p><strong>Phylum:</strong> {{ especie.phylum }}</p>
+                                        <p><strong>Classe:</strong> {{ especie.classe }}</p>
+                                        <p><strong>Order:</strong> {{ especie.order }}</p>
+                                        <p><strong>Family:</strong> {{ especie.family }}</p>
+                                        <p><strong>Genus:</strong> {{ especie.genus }}</p>
+                                        <p><strong>Specific Epithet:</strong> {{ especie.specificEpithet }}</p>
+                                        <p><strong>Infra Specific Epithet:</strong> {{ especie.infraspecificEpithet }}
+                                        </p>
+                                        <p><strong>Taxon Rank:</strong> {{ especie.taxonRank }}</p>
+                                        <p><strong>Scientific Name Authorship:</strong> {{
+                                            especie.scientificNameAuthorship }}</p>
+                                        <p><strong>Taxonomic Status:</strong> {{ especie.taxonomicStatus }}</p>
+                                    </div>
+                                    <div class="tab-pane fade" id="referencias{{ especie.id }}" role="tabpanel">
+                                        <p><strong>Comentários:</strong> {{ especie.comentarios }}</p>
+                                        <p><strong>Estado:</strong>
+                                        <ul>
+                                            {% for estado in especie.estado %}
+                                            <li>{{ estado }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                        </p>
+                                        <p><strong>Nomenclatural Status:</strong> {{ especie.nomenclaturalStatus }}</p>
+                                        <p><strong>Bibliographic Citation:</strong> {{ especie.bibliographicCitation }}
+                                        </p>
+                                        <p><strong>References:</strong> {{ especie.references }}</p>
+                                    </div>
+                                    <div class="tab-pane fade" id="descricaoMorfologica{{ especie.id }}"
+                                        role="tabpanel">
+                                        <p><strong>Descrição Morfológica:</strong> {{ especie.descricao_morfologica }}
+                                        </p>
+                                    </div>
+                                    <div class="tab-pane fade" id="chaveIdentificacao{{ especie.id }}" role="tabpanel">
+                                        <p><strong>Chave Identificação:</strong> {{ especie.chave_identificacao }}</p>
+                                    </div>
+                                    <div class="tab-pane fade" id="foto{{ especie.id }}" role="tabpanel">
+                                        <p><strong>Foto:</strong></p>
+                                        {% if especie.foto %}
+                                            <img src="{{ especie.foto.url }}" alt="Foto da espécie" class="img-fluid">
+                                        {% else %}
+                                            <p>Sem foto disponível.</p>
+                                        {% endif %}
+                                    </div>
+                                    
                                 </div>
+                                {%if user.is_authenticated %}
                                 <div class="modal-footer">
-                                    <a href="{% url 'editar_taxon' especie.id %}" class="btn btn-primary btn-sm">Editar</a>
-                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Fechar</button>
+                                    <a href="{% url 'editar_taxon' especie.id %}"
+                                        class="btn btn-primary btn-sm">Editar</a>
+                                        {% endif %}
+                                    <button type="button" class="btn btn-secondary btn-sm"
+                                        data-dismiss="modal">Fechar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                {% endfor %}
+
+                    {% endfor %}
             </tbody>
         </table>
     </div>
@@ -138,29 +181,33 @@
     <div class="table-responsive rounded shadow-lg bg-light mb-4">
         <table class="table table-hover table-striped table-bordered">
         </table>
-    
-        <div class="pagination-container w-100 text-right" style="background-color: white; padding: 10px 0; margin-top: -20px; padding-right: 10px;">
+
+        <div class="pagination-container w-100 text-right"
+            style="background-color: white; padding: 10px 0; margin-top: -20px; padding-right: 10px;">
             <div class="btn-group" role="group" aria-label="Paginação">
                 {% if page_obj.has_previous %}
-                    <a class="btn btn-info btn-sm" href="?page=1" aria-label="Primeira página">
-                        &laquo; Primeira
-                    </a>
-                    <a class="btn btn-info btn-sm" href="?page={{ page_obj.previous_page_number }}" aria-label="Página anterior">
-                        Anterior
-                    </a>
+                <a class="btn btn-primary btn-sm" href="?page=1" aria-label="Primeira página">
+                    &laquo; Primeira
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ page_obj.previous_page_number }}"
+                    aria-label="Página anterior">
+                    Anterior
+                </a>
                 {% endif %}
-    
+
                 <span class="btn btn-light btn-sm disabled">
                     Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
                 </span>
-    
+
                 {% if page_obj.has_next %}
-                    <a class="btn btn-info btn-sm" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima página">
-                        Próxima
-                    </a>
-                    <a class="btn btn-info btn-sm" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última página">
-                        Última &raquo;
-                    </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ page_obj.next_page_number }}"
+                    aria-label="Próxima página">
+                    Próxima
+                </a>
+                <a class="btn btn-primary btn-sm" href="?page={{ page_obj.paginator.num_pages }}"
+                    aria-label="Última página">
+                    Última &raquo;
+                </a>
                 {% endif %}
             </div>
         </div>

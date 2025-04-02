@@ -36,26 +36,24 @@ def eriocaulaceae_adicionar(request):
         form = TaxonForm()
     return render(request, 'eriocaulaceae_adicionar.html', {'form': form})
 
-@login_required
 def listar_especies(request):
-    # Pega o termo de busca da query string (GET)
     termo_busca = request.GET.get('q', '')
 
-    # Filtra os resultados com base no termo de busca
     queryset = Taxon.objects.all()
 
     if termo_busca:
         queryset = queryset.filter(
             Q(scientificName__icontains=termo_busca) |
-            Q(acceptedNameUsage__icontains=termo_busca)
+            Q(namePublishedInYear__icontains=termo_busca) |  # ANO
+            Q(genus__icontains=termo_busca) |  # GENERO
+            Q(estado__icontains=termo_busca) |  # estado
+            Q(paises__icontains=termo_busca)   # paises
         )
 
-    # Paginação
-    paginator = Paginator(queryset, 5)  # Exibe 5 itens por página
-    page_number = request.GET.get('page')  # Número da página
+    paginator = Paginator(queryset, 5)  
+    page_number = request.GET.get('page') 
     page_obj = paginator.get_page(page_number)
 
-    # Dicionário de estados
     estados = {
         'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
         'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',

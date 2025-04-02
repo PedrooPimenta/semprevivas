@@ -12,14 +12,19 @@ def listar_equipe(request):
 
 @login_required
 def adicionar_pesquisador(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = PesquisadorForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('listar_equipe')  
+            pesquisador = form.save(commit=False) 
+            pesquisador.ativo = True  
+            pesquisador.save()  
+            return redirect("listar_equipe")
+        else:
+            print(form.errors)  
     else:
         form = PesquisadorForm()
-    return render(request, 'adicionar_pesquisador.html', {'form': form})
+
+    return render(request, "adicionar_pesquisador.html", {"form": form})
 
 @login_required(login_url='/usuarios/contas/login')
 def editar_pesquisador(request, pesquisador_id):

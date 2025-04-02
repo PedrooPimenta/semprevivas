@@ -153,7 +153,7 @@ class Taxon(models.Model):
     references = models.TextField(blank=True,null=True,verbose_name="Outras Referências")
 
     # imagem 
-    foto = models.ImageField(upload_to='media/fotos',blank=True, null=True)
+    foto = models.ImageField(upload_to='fotos/', blank=True, null=True)
 
 
     def __str__(self):
