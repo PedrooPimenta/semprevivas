@@ -17,9 +17,38 @@
                 <a href="{% url 'listar_especies' %}" class="btn btn-secondary btn-sm w-100">Limpar</a>
             </div>
         </div>
-
-
     </form>
+    {% if messages %}
+  <div class="messages mt-4">
+    {% for message in messages %}
+      <div 
+        class="alert 
+               {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} 
+               alert-dismissible 
+               fade show" 
+        role="alert"
+        style="margin-bottom: 1.5rem; padding: 1rem 1.5rem; border-radius: 5px;"
+      >
+        {% if message.tags == "success" %}
+          ✅ 
+        {% elif message.tags == "error" %}
+          ❌ 
+        {% elif message.tags == "warning" %}
+          ⚠️ 
+        {% else %}
+          ℹ️ 
+        {% endif %}
+
+        {{ message }}
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+          style="float: right; background: none; border: none; font-size: 1.2rem; cursor: pointer;">×</button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
 
 
     <div class="table-responsive rounded shadow-lg bg-light  mt-3">
@@ -168,6 +197,7 @@
                                         {% endif %}
                                     <button type="button" class="btn btn-secondary btn-sm"
                                         data-dismiss="modal">Fechar</button>
+                                        <a href="{% url 'historico_taxon' especie.id %}">historico</a>
                                 </div>
                             </div>
                         </div>

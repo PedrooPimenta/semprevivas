@@ -17,4 +17,6 @@ urlpatterns =[
     path("editar-taxon/<int:pk>/", views.EditTaxonWizard.as_view(
         [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form]
     ), name="editar_taxon"),
+    path("taxon/<int:pk>/", views.history_Taxon, name="historico_taxon"),
+    
     ]

@@ -17,7 +17,8 @@ from django.core.files.storage import FileSystemStorage
 from .forms import TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form
 from formtools.wizard.views import SessionWizardView
 from django.db.models import Q
-
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 import json 
 
 
@@ -177,7 +178,10 @@ def upload_csv(request):
 
 
 class TaxonWizard(SessionWizardView):
-    form_list = [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form, TaxonStep9Form]
+    form_list = [
+        TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, 
+        TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form, TaxonStep9Form
+    ]
     template_name = "taxon_form_wizard.html"
     file_storage = FileSystemStorage(location='/tmp')
 
@@ -186,16 +190,11 @@ class TaxonWizard(SessionWizardView):
         for form in form_list:
             data.update(form.cleaned_data)
 
-        taxon = Taxon.objects.create(**data)
+        Taxon.objects.create(**data)
 
         messages.success(self.request, 'Cadastro realizado com sucesso.')
 
-        form_list = [form.__class__() for form in form_list]
-
-        return render(self.request, self.template_name, {
-            'wizard': self,
-            'form_list': form_list
-        })
+        return HttpResponseRedirect(reverse('listar_especies'))
 
 
 class EditTaxonWizard(SessionWizardView):
@@ -211,9 +210,9 @@ class EditTaxonWizard(SessionWizardView):
         return kwargs
     def get_form_kwargs(self, step):
         kwargs = super().get_form_kwargs(step)
-        taxon_id = self.kwargs.get('pk')
-        if taxon_id:
-            taxon = Taxon.objects.get(pk=taxon_id)
+        pk = self.kwargs.get('pk')
+        if pk:
+            taxon = Taxon.objects.get(pk=pk)
             kwargs['instance'] = taxon
         return kwargs
 
@@ -223,10 +222,10 @@ class EditTaxonWizard(SessionWizardView):
         for form in form_list:
             data.update(form.cleaned_data)
 
-        taxon_id = self.kwargs.get('pk')
-        if not taxon_id:
+        pk = self.kwargs.get('pk')
+        if not pk:
             raise ValueError("ID do táxon não encontrado na URL")
-        taxon = Taxon.objects.get(pk=taxon_id)
+        taxon = Taxon.objects.get(pk=pk)
         taxon.taxonID = data['taxonID']
         taxon.acceptedNameUsageID = data['acceptedNameUsageID']
         taxon.parentNameUsageID = data['parentNameUsageID']
@@ -261,3 +260,35 @@ class EditTaxonWizard(SessionWizardView):
             'form_list': form_list,
             'taxon': taxon,
         })
+    
+def history_Taxon(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    historico = taxon.history.all().order_by('history_date')  
+    historico_detalhado = []
+    anterior = None
+
+    for item in historico:
+        diffs = []
+        if anterior:
+            delta = anterior.diff_against(item)  
+            for change in delta.changes:
+                diffs.append({
+                    'field': change.field,
+                    'old': change.old,
+                    'new': change.new,
+                })
+        historico_detalhado.append({
+            'data': item.history_date,
+            'tipo': item.history_type,
+            'objeto': item,
+            'diferencas': diffs,
+            'usuario': item.history_user,
+        })
+        anterior = item
+
+    historico_detalhado.reverse()
+
+    return render(request, 'history_taxon.html', {
+        'taxon': taxon,
+        'historico': historico_detalhado
+    })

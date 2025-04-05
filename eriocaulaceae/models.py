@@ -1,5 +1,6 @@
 from django.db import models
 from multiselectfield import MultiSelectField
+from simple_history.models import HistoricalRecords
 
 class Estado(models.Model):
     SIGLA_CHOICES = [
@@ -94,6 +95,7 @@ class Taxon(models.Model):
     paises = models.TextField(null=True, blank=True)  # Campo de texto para armazenar JSON
     # Distribuição (biomas brasileiros)
     distribuicao_biomas =models.TextField(null=True, blank=True)
+    history = HistoricalRecords()
     
 
     fitofisionomias = models.TextField(null=True, blank=True)

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5  mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h2>Histórico de Alterações para: {{ taxon.scientificName }}</h2>
+
+            <table class="table table-bordered table-striped mt-4 shadow-lg rounded">   
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Data</th>
+                        <th>Tipo</th>
+                        <th>Usuário</th>
+                        <th>Alterações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in historico %}
+                    <tr>
+                        <td>{{ item.data|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if item.tipo == '+' %}
+                                Criado
+                            {% elif item.tipo == '~' %}
+                                Alterado
+                            {% elif item.tipo == '-' %}
+                                Deletado
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.usuario %}
+                                {{ item.usuario.username }}
+                            {% else %}
+                                <em>Desconhecido</em>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.diferencas %}
+                                <ul class="mb-0">
+                                    {% for diff in item.diferencas %}
+                                    <li>
+                                        <strong>{{ diff.field }}:</strong>
+                                        de "<em>{{ diff.old }}</em>" para "<em>{{ diff.new }}</em>"
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <em>Nenhuma mudança detectada.</em>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not historico %}
+                <div class="alert alert-info mt-4">
+                    Nenhuma alteração registrada para este táxon.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
