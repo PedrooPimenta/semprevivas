@@ -51,6 +51,10 @@ def listar_especies(request):
             Q(paises__icontains=termo_busca)   # paises
         )
 
+    # Verificar se a busca retornou algum resultado
+    if not queryset.exists():
+        messages.info(request, 'Nenhuma espécie encontrada .')
+
     paginator = Paginator(queryset, 5)  
     page_number = request.GET.get('page') 
     page_obj = paginator.get_page(page_number)
@@ -67,13 +71,12 @@ def listar_especies(request):
 
     # Processar estado para nomes completos
     for taxon in page_obj:
-        if taxon.estado is not None:
+        if taxon.estado:
             nomes_completos = [estados.get(sigla) for sigla in eval(taxon.estado)]
             taxon.estado = nomes_completos
         else:
             taxon.estado = None
 
-    # Passar os dados para o template
     return render(request, 'listar_especies.html', {'page_obj': page_obj, 'termo_busca': termo_busca})
         
     
