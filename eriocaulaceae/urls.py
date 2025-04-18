@@ -18,5 +18,8 @@ urlpatterns =[
         [TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form, TaxonStep5Form,TaxonStep6Form,TaxonStep7Form,TaxonStep8Form,TaxonStep9Form]
     ), name="editar_taxon"),
     path("taxon/<int:pk>/", views.history_Taxon, name="historico_taxon"),
+    path('listar_solicitacoes/', views.list_solicitacoes, name='listar_solicitacoes'),
+    path('taxon/<int:pk>/toggle_status/', views.toggle_status, name='toggle_status'),
+    path('set-especie/<int:especie_id>/', views.set_especie_false, name='set_especie_false'),
     
     ]

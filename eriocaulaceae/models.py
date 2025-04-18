@@ -96,6 +96,8 @@ class Taxon(models.Model):
     # Distribuição (biomas brasileiros)
     distribuicao_biomas =models.TextField(null=True, blank=True)
     history = HistoricalRecords()
+    status = models.BooleanField(default=False, verbose_name="Ativo")
+    created_at = models.DateTimeField(null=True, blank=True)
     
 
     fitofisionomias = models.TextField(null=True, blank=True)
@@ -158,5 +160,5 @@ class Taxon(models.Model):
     foto = models.ImageField(upload_to='fotos/', blank=True, null=True)
 
 
-    def __str__(self):
-        return self.scientificName
+def __str__(self):
+    return self.scientificName or f"Taxon ID {self.id}"

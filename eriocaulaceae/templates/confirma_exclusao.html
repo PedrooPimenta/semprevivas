@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %} Página Inicial {% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-90 py-3">
+    <div class="col-md-10 col-10 bg-light p-4 rounded shadow  w-100 mx-auto">
+        <h2 class="text-center mb-4">Confirmar Exclusão</h2>
+
+        <p class="lead">Você tem certeza que deseja excluir o(a) Solicitação <strong> {{ s.nome }} </strong>?</p>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-block py-3 mt-3">Excluir</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'listar_equipe' %}" class="btn btn-outline-secondary">Voltar </a>
+        </div>
+    </div>
+
+{% endblock %}

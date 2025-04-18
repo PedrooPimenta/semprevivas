@@ -29,7 +29,7 @@
     </div>
     {% endif %}
 
-    {% if page_obj %}
+    {% if page_obj  %}
     <div class="table-responsive container-fluid  mt-3">
         <table class="table table-bordered table-striped mt-4  rounded">
             <thead class="thead-dark">
@@ -156,6 +156,9 @@
                                     </button>
                                     <a href="{% url 'historico_taxon' especie.id %}" class="btn btn-info btn-sm">
                                         <i class="fas fa-history"></i> Histórico
+                                    </a>
+                                    <a href="{% url 'set_especie_false' especie.id %}" class="btn btn-danger btn-sm;">
+                                        <i class="fas fa-trash"></i> Excluir
                                     </a>
                                 </div>
                                 {% endif %}

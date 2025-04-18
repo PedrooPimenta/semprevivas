@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}Solicitações{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if user.is_authenticated %}
+        <h1 class="mb-4 text-center">Solicitações de Cadastro dos Usuários</h1>
+
+        <table class="table table-hover table-bordered table-striped align-middle">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome Científico</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in solicitacoes %}
+                    <tr>
+                        <td class="text-center">{{ s.id }}</td>
+                        <td>{{ s.scientificName }}</td>
+                        <td class="text-center">
+                            {% if s.status %}
+                                <span class="badge bg-success"><i class="fas fa-check-circle"></i> Ativo</span>
+                            {% else %}
+                                <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-info btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#modalSolicitacao{{ s.id }}">
+                                <i class="fas fa-eye"></i> Visualizar
+                            </button>
+
+                            <form method="post" action="{% url 'toggle_status' s.pk %}" style="display: inline;">
+                                {% csrf_token %}
+                                {% if s.status %}
+                                    <button type="submit" class="btn btn-danger btn-sm mb-1">
+                                        <i class="fas fa-ban"></i> Desativar
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success btn-sm mb-1">
+                                        <i class="fas fa-check"></i> Ativar
+                                    </button>
+                                    <a href="{% url 'apagar_especie' s.pk %}" class="btn btn-secondary btn-sm mb-1">
+                                        <i class="fas fa-trash-alt"></i> Excluir
+                                    </a>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+
+                    <div class="modal fade" id="modalSolicitacao{{ s.id }}" tabindex="-1" aria-labelledby="modalLabel{{ s.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ s.id }}">Detalhes da Solicitação #{{ s.id }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <ul class="nav nav-tabs" id="modalTabs{{ s.id }}" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="geral-tab{{ s.id }}" data-bs-toggle="tab" href="#geral{{ s.id }}" role="tab">Geral</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="taxonomia-tab{{ s.id }}" data-bs-toggle="tab" href="#taxonomia{{ s.id }}" role="tab">Taxon</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#descricaoMorfologica{{ s.id }}" role="tab">Descrição Morfológica</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#chaveIdentificacao{{ s.id }}" role="tab">Chave Identificação</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#foto{{ s.id }}" role="tab">Fotos</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#referencias{{ s.id }}" role="tab">Referências</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content mt-3">
+                                        <div class="tab-pane fade show active" id="geral{{ s.id }}" role="tabpanel">
+                                            <p><strong>Taxon ID:</strong> {{ s.taxonID }}</p>
+                                            <p><strong>Accepted Name Usage ID:</strong> {{ s.acceptedNameUsageID }}</p>
+                                            <p><strong>Parent Name Usage ID:</strong> {{ s.parentNameUsageID }}</p>
+                                            <p><strong>Scientific Name:</strong> {{ s.scientificName }}</p>
+                                            <p><strong>Accepted Name Usage:</strong> {{ s.acceptedNameUsage }}</p>
+                                            <p><strong>Name Published In:</strong> {{ s.namePublishedIn }}</p>
+                                            <p><strong>Name Published In Year:</strong> {{ s.namePublishedInYear }}</p>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="taxonomia{{ s.id }}" role="tabpanel">
+                                            <p><strong>Higher Classification:</strong> {{ s.higherClassification }}</p>
+                                            <p><strong>Kingdom:</strong> {{ s.kingdom }}</p>
+                                            <p><strong>Phylum:</strong> {{ s.phylum }}</p>
+                                            <p><strong>Classe:</strong> {{ s.classe }}</p>
+                                            <p><strong>Order:</strong> {{ s.order }}</p>
+                                            <p><strong>Family:</strong> {{ s.family }}</p>
+                                            <p><strong>Genus:</strong> {{ s.genus }}</p>
+                                            <p><strong>Specific Epithet:</strong> {{ s.specificEpithet }}</p>
+                                            <p><strong>Infra Specific Epithet:</strong> {{ s.infraspecificEpithet }}</p>
+                                            <p><strong>Taxon Rank:</strong> {{ s.taxonRank }}</p>
+                                            <p><strong>Scientific Name Authorship:</strong> {{ s.scientificNameAuthorship }}</p>
+                                            <p><strong>Taxonomic Status:</strong> {{ s.taxonomicStatus }}</p>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="descricaoMorfologica{{ s.id }}" role="tabpanel">
+                                            <p><strong>Descrição Morfológica:</strong> {{ s.descricao_morfologica }}</p>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="chaveIdentificacao{{ s.id }}" role="tabpanel">
+                                            <p><strong>Chave Identificação:</strong> {{ s.chave_identificacao }}</p>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="foto{{ s.id }}" role="tabpanel">
+                                            <p><strong>Foto:</strong></p>
+                                            {% if s.foto %}
+                                                <img src="{{ s.foto.url }}" alt="Foto da espécie" class="img-fluid rounded border">
+                                            {% else %}
+                                                <p class="text-muted">Nenhuma foto disponível.</p>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="tab-pane fade" id="referencias{{ s.id }}" role="tabpanel">
+                                            <p><strong>Comentários:</strong> {{ s.comentarios }}</p>
+                                            <p><strong>Estados:</strong>
+                                                {% if s.estado %}
+                                                    <ul>
+                                                        {% for e in s.estado %}
+                                                            <li>{{ e }}</li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% else %}
+                                                    Nenhum estado informado.
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Status Nomenclatural:</strong> {{ s.nomenclaturalStatus }}</p>
+                                            <p><strong>Citação Bibliográfica:</strong> {{ s.bibliographicCitation }}</p>
+                                            <p><strong>Referências:</strong> {{ s.references }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-warning">Você precisa estar autenticado para visualizar as solicitações.</div>
+    {% endif %}
+</div>
+{% endblock %}

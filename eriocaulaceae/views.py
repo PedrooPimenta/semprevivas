@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render,get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -40,23 +41,23 @@ def eriocaulaceae_adicionar(request):
 def listar_especies(request):
     termo_busca = request.GET.get('q', '')
 
-    queryset = Taxon.objects.all()
+    queryset = Taxon.objects.filter(status=True)
+    solicitacoes_pendentes = Taxon.objects.filter(status=False).count()
 
     if termo_busca:
         queryset = queryset.filter(
             Q(scientificName__icontains=termo_busca) |
-            Q(namePublishedInYear__icontains=termo_busca) |  # ANO
-            Q(genus__icontains=termo_busca) |  # GENERO
-            Q(estado__icontains=termo_busca) |  # estado
-            Q(paises__icontains=termo_busca)   # paises
+            Q(namePublishedInYear__icontains=termo_busca) |
+            Q(genus__icontains=termo_busca) |
+            Q(estado__icontains=termo_busca) |
+            Q(paises__icontains=termo_busca)
         )
 
-    # Verificar se a busca retornou algum resultado
     if not queryset.exists():
-        messages.info(request, 'Nenhuma espécie encontrada .')
+        messages.info(request, 'Nenhuma espécie encontrada.')
 
-    paginator = Paginator(queryset, 5)  
-    page_number = request.GET.get('page') 
+    paginator = Paginator(queryset, 5)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     estados = {
@@ -69,7 +70,6 @@ def listar_especies(request):
         'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
     }
 
-    # Processar estado para nomes completos
     for taxon in page_obj:
         if taxon.estado:
             nomes_completos = [estados.get(sigla) for sigla in eval(taxon.estado)]
@@ -77,7 +77,14 @@ def listar_especies(request):
         else:
             taxon.estado = None
 
-    return render(request, 'listar_especies.html', {'page_obj': page_obj, 'termo_busca': termo_busca})
+    context = {
+        'page_obj': page_obj,
+        'termo_busca': termo_busca,
+        'solicitacoes_pendentes': solicitacoes_pendentes
+    }
+
+    return render(request, 'listar_especies.html', context)
+
         
     
 
@@ -117,17 +124,41 @@ def apagar_especie(request, especie_id):
     else:
         return render(request, 'apagar_especie.html', {'especie': especie})
 
+def set_especie_false(request, especie_id):
+    especie = get_object_or_404(Taxon, id=especie_id)
+    if request.method == 'POST':
+        especie.status = False
+        especie.save()
+        return redirect('listar_especies')  
+    else:
+        return render(request, 'apagar_especie.html', {'especie': especie})
 
+@login_required
+def toggle_status(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    taxon.status = not taxon.status
+    taxon.save()
+    return redirect('listar_solicitacoes')
+
+def verify_staus(request, pk):
+    status = Taxon.objects.filter(pk=pk).values('status')
+    return status     
+
+def list_solicitacoes(request):
+    solicitacoes = Taxon.objects.filter(status=False)
+    return render(request, 'list_solicitacoes.html', {'solicitacoes': solicitacoes})
 
 def adicionar_especie(request):
     if request.method == 'POST':
         form = TaxonForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() :
+            request.POST['status'] = False
             form.save()
+            messages.info(request, 'Seu cadastro será verificado por um administrador.')
             return redirect('listar_especies')  
     else:
         form = TaxonForm()
-    return render(request, 'adicionar_especie.html', {'form': form})
+    return render(request, 'adicionar_especie.html', {'form': form},{messages: messages})
 
 
 
@@ -192,10 +223,10 @@ class TaxonWizard(SessionWizardView):
         data = {}
         for form in form_list:
             data.update(form.cleaned_data)
-
+        data['status'] = False
         Taxon.objects.create(**data)
 
-        messages.success(self.request, 'Cadastro realizado com sucesso.')
+        messages.info(self.request, 'Seu cadastro será analisado por um administrador.')
 
         return HttpResponseRedirect(reverse('listar_especies'))
 
@@ -266,20 +297,24 @@ class EditTaxonWizard(SessionWizardView):
     
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
-    historico = taxon.history.all().order_by('history_date')  
+    historico = taxon.history.all().order_by('history_date')
     historico_detalhado = []
     anterior = None
 
     for item in historico:
         diffs = []
         if anterior:
-            delta = anterior.diff_against(item)  
+            delta = anterior.diff_against(item)
             for change in delta.changes:
+                if change.field == 'status':
+                    continue  
+
                 diffs.append({
                     'field': change.field,
                     'old': change.old,
                     'new': change.new,
                 })
+
         historico_detalhado.append({
             'data': item.history_date,
             'tipo': item.history_type,
