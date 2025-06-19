@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-4 p-5 rounded shadow-lg py-4">
-    <h2 class="text-center mb-4">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</h2>
+
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} text-center">
@@ -11,18 +11,46 @@
         {% endfor %}
     {% endif %}
 
-    <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white">
-        {% csrf_token %}
-        {{ wizard.management_form }}
-        <div class="mb-3">
-        {{ form.as_p }}
-        </div>
-        <div class="d-flex justify-content-between">
-            {% if wizard.steps.prev %}
-                <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Voltar</button>
+    {% if done %}
+        <h2 class="text-center mb-4">Táxon atualizado com sucesso</h2>
+        <div class="mt-4">
+            <p><strong>taxonID:</strong> {{ taxon.taxonID }}</p>
+            <p><strong>Nome Científico:</strong> {{ taxon.scientificName }}</p>
+            <p><strong>Reino:</strong> {{ taxon.kingdom }}</p>
+            <p><strong>Filo:</strong> {{ taxon.phylum }}</p>
+            <p><strong>Classe:</strong> {{ taxon.classe }}</p>
+            <p><strong>Ordem:</strong> {{ taxon.order }}</p>
+            <p><strong>Família:</strong> {{ taxon.family }}</p>
+            <p><strong>Gênero:</strong> {{ taxon.genus }}</p>
+            <p><strong>Epíteto Específico:</strong> {{ taxon.specificEpithet }}</p>
+            <p><strong>Epíteto Infraespecífico:</strong> {{ taxon.infraspecificEpithet }}</p>
+            <p><strong>Rank:</strong> {{ taxon.taxonRank }}</p>
+            <p><strong>Referências:</strong> {{ taxon.references }}</p>
+            <p><strong>Citação Bibliográfica:</strong> {{ taxon.bibliographicCitation }}</p>
+            {% if taxon.foto %}
+                <p><strong>Foto:</strong><br><img src="{{ taxon.foto.url }}" alt="Foto do táxon" class="img-fluid" width="300"></p>
             {% endif %}
-            <button type="submit" class="btn btn-primary">Próximo</button>
         </div>
-    </form>
+        <div class="mt-4 text-center">
+            <a href="{% url 'editar_taxon' pk=taxon.pk %}" class="btn btn-warning">Editar Novamente</a>
+            <a href="{% url 'listar_especies' %}" class="btn btn-secondary">Voltar à Lista</a>
+        </div>
+
+    {% else %}
+        <h2 class="text-center mb-4">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</h2>
+        <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white">
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            <div class="mb-3">
+                {{ wizard.form.as_p }}
+            </div>
+            <div class="d-flex justify-content-between">
+                {% if wizard.steps.prev %}
+                    <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Voltar</button>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Próximo</button>
+            </div>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
