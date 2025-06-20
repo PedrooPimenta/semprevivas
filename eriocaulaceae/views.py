@@ -10,6 +10,8 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from formtools.wizard.views import SessionWizardView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 import pandas as pd
 from .forms import (
     TaxonForm, CSVUploadForm,
@@ -22,7 +24,6 @@ def eriocaulaceae_home(request):
     return render(request, "eriocaulaceae_home.html")
 
 @login_required
-
 def eriocaulaceae_adicionar(request):
     group_required = 'administradores'
     if request.method == 'POST':
@@ -34,6 +35,7 @@ def eriocaulaceae_adicionar(request):
         form = TaxonForm()
     return render(request, 'eriocaulaceae_adicionar.html', {'form': form})
 
+@login_required
 def listar_especies(request):
     termo_busca = request.GET.get('q', '')
     queryset = Taxon.objects.filter(status=True)
@@ -81,6 +83,7 @@ def listar_especies(request):
 
 @login_required
 def buscar_especies(request):
+    group_required = ['Adm', 'Pesquisadores', 'Convidado']
     especies = []
     termo_busca = 'Erio'
 
@@ -189,7 +192,8 @@ def upload_csv(request):
     else:
         form = CSVUploadForm()
     return render(request, 'upload_csv.html', {'form': form})
-class TaxonWizard(SessionWizardView):
+
+class TaxonWizard(LoginRequiredMixin,SessionWizardView):
     form_list = [
         TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
         TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form,
@@ -207,8 +211,9 @@ class TaxonWizard(SessionWizardView):
         messages.info(self.request, 'Seu cadastro será analisado por um administrador.')
         return HttpResponseRedirect(reverse('listar_especies'))
 
+
 @method_decorator(never_cache, name='dispatch')
-class EditTaxonWizard(SessionWizardView):
+class EditTaxonWizard(LoginRequiredMixin,SessionWizardView):
     form_list = [
         TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
         TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form,
@@ -272,7 +277,7 @@ class EditTaxonWizard(SessionWizardView):
             'done': True,
             'taxon': taxon
         })
-
+@login_required
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
     historico = taxon.history.all().order_by('history_date')

@@ -17,5 +17,10 @@ urlpatterns = [
     path('contas/reset_password_done/', CustomPasswordResetDoneView.as_view(), name='custom_reset_password_done'),
     path('contas/reset_password_complete/', CustomPasswordResetCompleteView.as_view(), name='reset_password_complete'),
     path('logout/', views.logout_view, name='logout'),
+    path("listar/usarios/", views.listar_usuarios, name="listar_usuarios"),
+    path("editar_usuario/<int:user_id>/", views.editar_usuario, name="editar_usuario"),
+    path("apagar_usuario/<int:user_id>/", views.apagar_usuario, name="apagar_usuario"),
+    path('atribuir_grupo/<int:user_id>/<str:group_name>/', views.atribuir_grupo, name='atribuir_grupo'),
+
     re_path(r"^register/", views.register, name="register"),
 ]

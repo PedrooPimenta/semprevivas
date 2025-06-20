@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 @receiver(post_migrate)
 def criar_grupos_padrao(sender, **kwargs):
-    grupos = ["Adm", "Users"]
+    grupos = ["Adm", "Convidado", "Pesquisadores"]
     for nome in grupos:
         group, criado = Group.objects.get_or_create(name=nome.strip())
     

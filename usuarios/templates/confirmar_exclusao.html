@@ -12,16 +12,13 @@
                     <h5 class="mb-0">Confirmar Exclusão</h5>
                 </div>
                 <div class="card-body">
-                    <p class="fs-5">
-                        Tem certeza de que deseja excluir o(a) pesquisador(a) 
-                        <strong>{{ pesquisador.nome }}</strong>?
-                    </p>
+                    <p class="fs-5">Tem certeza de que deseja excluir o usuário <strong>{{ usuario.username }}</strong>?</p>
                     <p class="text-muted">Esta ação não poderá ser desfeita.</p>
 
                     <form method="post">
                         {% csrf_token %}
                         <div class="d-flex justify-content-between">
-                            <a href="{% url 'listar_equipe' %}" class="btn btn-secondary">Cancelar</a>
+                            <a href="{% url 'listar_usuarios' %}" class="btn btn-secondary">Cancelar</a>
                             <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
                         </div>
                     </form>
