@@ -89,23 +89,24 @@ def minha_view_protegida(request):
         return render(request, 'erro_autenticacao.html')
 
 
+
 @login_required
 def listar_usuarios(request):
     if not request.user.groups.filter(name='Adm').exists():
-        raise PermissionDenied("Você não tem permissão para acessar esta página.")
+        return render(request, 'access_denied.html', status=403)
 
     User = get_user_model()
     usuarios = User.objects.all().order_by('username')
     paginator = Paginator(usuarios, 10)
     page_number = request.GET.get('page')
-    usuarios = paginator.get_page(page_number)
+    usuarios_page = paginator.get_page(page_number)
 
-    return render(request, 'listar_usuarios.html', {'usuarios': usuarios})
+    return render(request, 'listar_usuarios.html', {'usuarios': usuarios_page})
 
-@login_required
+login_required
 def editar_usuario(request, user_id):
     if not request.user.groups.filter(name='Adm').exists():
-        raise PermissionDenied("Você não tem permissão para acessar esta página.")
+        return render(request, 'access_denied.html', status=403)
 
     User = get_user_model()
     usuario = get_object_or_404(User, pk=user_id)
@@ -120,10 +121,11 @@ def editar_usuario(request, user_id):
 
     return render(request, 'editar_usuario.html', {'form': form, 'usuario': usuario})
 
+
 @login_required
 def apagar_usuario(request, user_id):
     if not request.user.groups.filter(name='Adm').exists():
-        raise PermissionDenied("Você não tem permissão para acessar esta página.")
+        return render(request, 'access_denied.html', status=403)
 
     User = get_user_model()
     usuario = get_object_or_404(User, pk=user_id)

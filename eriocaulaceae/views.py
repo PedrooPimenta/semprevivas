@@ -10,7 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from formtools.wizard.views import SessionWizardView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,   UserPassesTestMixin
 
 import pandas as pd
 from .forms import (
@@ -132,6 +132,9 @@ def toggle_status(request, pk):
 
 @login_required
 def list_solicitacoes(request):
+    if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+        return render(request, 'access_denied.html', status=403)
+    
     solicitacoes = Taxon.objects.filter(status=False)
     return render(request, 'list_solicitacoes.html', {'solicitacoes': solicitacoes})
 
@@ -193,7 +196,7 @@ def upload_csv(request):
         form = CSVUploadForm()
     return render(request, 'upload_csv.html', {'form': form})
 
-class TaxonWizard(LoginRequiredMixin,SessionWizardView):
+class TaxonWizard(LoginRequiredMixin, SessionWizardView):
     form_list = [
         TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
         TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form,
@@ -201,6 +204,12 @@ class TaxonWizard(LoginRequiredMixin,SessionWizardView):
     ]
     template_name = "taxon_form_wizard.html"
     file_storage = FileSystemStorage(location='/tmp')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+            # Renderiza o template de acesso negado diretamente
+            return render(request, 'access_denied.html', status=403)
+        return super().dispatch(request, *args, **kwargs)
 
     def done(self, form_list, **kwargs):
         data = {}
@@ -213,7 +222,7 @@ class TaxonWizard(LoginRequiredMixin,SessionWizardView):
 
 
 @method_decorator(never_cache, name='dispatch')
-class EditTaxonWizard(LoginRequiredMixin,SessionWizardView):
+class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
     form_list = [
         TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
         TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form,
@@ -221,6 +230,25 @@ class EditTaxonWizard(LoginRequiredMixin,SessionWizardView):
     ]
     template_name = "edit_taxon_wizard.html"
     file_storage = FileSystemStorage(location='/tmp')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return render(
+                request,
+                "access_denied.html",
+                {"message": "Você precisa estar logado."},
+                status=401
+            )
+
+        if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+            return render(
+                request,
+                "access_denied.html",
+                {"message": " Você não tem permissão para editar espécies."},
+                status=403
+            )
+
+        return super().dispatch(request, *args, **kwargs)
 
     def get_wizard_kwargs(self, step):
         kwargs = super().get_wizard_kwargs(step)
@@ -277,6 +305,7 @@ class EditTaxonWizard(LoginRequiredMixin,SessionWizardView):
             'done': True,
             'taxon': taxon
         })
+    
 @login_required
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
