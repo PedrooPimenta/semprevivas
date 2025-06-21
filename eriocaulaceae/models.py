@@ -1,7 +1,7 @@
 from django.db import models
 from multiselectfield import MultiSelectField
 from simple_history.models import HistoricalRecords
-import uuid
+import uuid as uuid_lib
 class Estado(models.Model):
     SIGLA_CHOICES = [
         ('AC', 'Acre'),
@@ -42,7 +42,9 @@ class Estado(models.Model):
 # Create your models here.
 class Taxon(models.Model):
     # numero da taxonomia
-    # uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid_lib.uuid4, editable=False)
+
+
     taxonID = models.IntegerField(verbose_name="ID na Taxonomia")
     # ID do nome aceito 
     acceptedNameUsageID = models.IntegerField(verbose_name="ID do Nome Aceito",blank=True,null=True)

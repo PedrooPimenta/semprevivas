@@ -1,17 +1,19 @@
 FROM python:3.11
 
-# Defina o diretório de trabalho dentro do contêiner
+# Define o diretório de trabalho dentro do container
 WORKDIR /semprevivas
 
-# Copie os arquivos de código fonte do Django para o contêiner
+# Copia todos os arquivos do projeto para o container
 COPY . /semprevivas
 
+# Atualiza o pip
 RUN pip install --upgrade pip
-# Instale as dependências do aplicativo
+
+# Instala as dependências listadas no requirements.txt (incluindo psycopg2-binary)
 RUN pip install -r requirements.txt
 
-# Exponha a porta em que o aplicativo Django será executado
+# Expõe a porta 8000 para acesso externo
 EXPOSE 8000
 
-# Comando para iniciar o servidor Django quando o contêiner for iniciado
+# Comando para rodar o servidor Django quando o container iniciar
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

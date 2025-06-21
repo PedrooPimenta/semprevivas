@@ -1,10 +1,31 @@
+services:
+  web:
+    build: .
+    volumes:
+      - .:/semprevivas  # Monta o diretório atual no container
+    ports:
+      - "8000:8000"  # Mapeia a porta 8000 do container para a máquina host
+    environment:
+      - PYTHONUNBUFFERED=1  # Para facilitar o logging no console
+      - POSTGRES_DB=semprevivas
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
 
-  services:
-    web:
-      build: .
-      volumes:
-        - .:/semprevivas  # Monta o diretório atual
-      ports:
-        - "8000:8000"  # Mapeia a porta 8000 do contêiner para a máquina host
-      environment:
-        - PYTHONUNBUFFERED=1  # Para facilitar o logging
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: semprevivas
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:

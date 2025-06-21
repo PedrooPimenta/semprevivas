@@ -306,7 +306,7 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             'taxon': taxon
         })
     
-@login_required
+login_required
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
     historico = taxon.history.all().order_by('history_date')
@@ -316,7 +316,7 @@ def history_Taxon(request, pk):
     for item in historico:
         diffs = []
         if anterior:
-            delta = anterior.diff_against(item)
+            delta = item.diff_against(anterior)  
             for change in delta.changes:
                 if change.field == 'status':
                     continue
