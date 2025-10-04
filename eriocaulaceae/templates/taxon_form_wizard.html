@@ -1,29 +1,58 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Adicionar Espécie{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/adicionar_especie.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4 p-4 rounded shadow-lg">
-    <h2 class="text-center mb-4">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</h2>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} text-center">
-                {{ message }}
+<div class="adicionar-especie-container-semprevivas">
+    <div class="container">
+        <div class="adicionar-especie-card-semprevivas">
+            <div class="adicionar-especie-header-semprevivas">
+                <h2 class="adicionar-especie-title-semprevivas">Adicionar Espécie</h2>
+                <p class="adicionar-especie-subtitle-semprevivas">
+                    Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}
+                </p>
             </div>
-        {% endfor %}
-    {% endif %}
 
-    <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white">
-        {% csrf_token %}
-        {{ wizard.management_form }}
-        <div class="mb-3">
-            {{ form.as_p }}
-        </div>
-        <div class="d-flex justify-content-between">
-            {% if wizard.steps.prev %}
-                <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Voltar</button>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="adicionar-especie-alert-semprevivas alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             {% endif %}
-            <button type="submit" class="btn btn-primary">Próximo</button>
+
+            <form method="post" enctype="multipart/form-data" class="adicionar-especie-form-semprevivas">
+                {% csrf_token %}
+                {{ wizard.management_form }}
+                
+                <div class="adicionar-especie-form-group-semprevivas">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="adicionar-especie-actions-semprevivas">
+                    {% if wizard.steps.prev %}
+                        <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="adicionar-especie-btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </button>
+                    {% else %}
+                        <div></div> 
+                    {% endif %}
+                    
+                    <button type="submit" class="adicionar-especie-btn-primary">
+                        {% if wizard.steps.next %}
+                            Próximo <i class="fas fa-arrow-right ms-2"></i>
+                        {% else %}
+                            Finalizar <i class="fas fa-check ms-2"></i>
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </div>
 {% endblock %}

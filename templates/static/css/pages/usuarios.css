@@ -1,0 +1,205 @@
+.usuarios-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0;
+}
+
+.usuarios-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.usuarios-card-semprevivas:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.usuarios-media-semprevivas {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.usuarios-avatar-semprevivas {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #A9D18E;
+}
+
+.usuarios-info-semprevivas {
+    flex-grow: 1;
+}
+
+.usuarios-username-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+}
+
+.usuarios-name-semprevivas {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.usuarios-badge-semprevivas {
+    background: #2E8B57;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.usuarios-footer-semprevivas {
+    background: rgba(248, 249, 250, 0.8);
+    border-top: 1px solid rgba(169, 209, 142, 0.2);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.usuarios-date-semprevivas {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.usuarios-actions-semprevivas {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.usuarios-card-semprevivas:hover .usuarios-actions-semprevivas {
+    opacity: 1;
+}
+
+.usuarios-btn-group-semprevivas {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(169, 209, 142, 0.3);
+    border-radius: 8px;
+    padding: 0.3rem;
+    display: flex;
+    gap: 0.2rem;
+}
+
+.usuarios-btn-role-semprevivas {
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.usuarios-btn-role-semprevivas:hover {
+    background: rgba(169, 209, 142, 0.2);
+    transform: scale(1.1);
+}
+
+.usuarios-btn-action-semprevivas {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
+}
+
+.usuarios-btn-edit-semprevivas {
+    background: #ffc107;
+    color: #212529;
+}
+
+.usuarios-btn-edit-semprevivas:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+}
+
+.usuarios-btn-delete-semprevivas {
+    background: #dc3545;
+    color: white;
+}
+
+.usuarios-btn-delete-semprevivas:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.usuarios-empty-semprevivas {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1.1rem;
+    padding: 3rem;
+}
+
+.usuarios-pagination-semprevivas {
+    margin-top: 2rem;
+}
+
+.usuarios-page-link-semprevivas {
+    color: #2E8B57;
+    border: 1px solid rgba(169, 209, 142, 0.3);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.usuarios-page-link-semprevivas:hover {
+    background: #2E8B57;
+    color: white;
+    border-color: #2E8B57;
+}
+
+.usuarios-page-item.active .usuarios-page-link-semprevivas {
+    background: #2E8B57;
+    border-color: #2E8B57;
+    color: white;
+}
+
+.usuarios-page-item.disabled .usuarios-page-link-semprevivas {
+    color: #6c757d;
+    background: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+@media (max-width: 768px) {
+    .usuarios-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .usuarios-media-semprevivas {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .usuarios-footer-semprevivas {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .usuarios-actions-semprevivas {
+        opacity: 1;
+        justify-content: center;
+    }
+    
+    .usuarios-btn-group-semprevivas {
+        order: -1;
+        margin-bottom: 1rem;
+    }
+}

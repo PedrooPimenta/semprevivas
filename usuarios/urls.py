@@ -23,4 +23,10 @@ urlpatterns = [
     path('atribuir_grupo/<int:user_id>/<str:group_name>/', views.atribuir_grupo, name='atribuir_grupo'),
 
     re_path(r"^register/", views.register, name="register"),
+
+    path('listar_equipe',views.listar_equipe, name='listar_equipe'),
+
+    path('adicionar_pesquisador/',views.adicionar_pesquisador,name='adicionar_pesquisador'),
+    path('editar_pesquisador/<int:pesquisador_id>/', views.editar_pesquisador, name='editar_pesquisador'),
+    path('apagar_pesquisador/<int:pesquisador_id>/', views.apagar_pesquisador, name='apagar_pesquisador'),
 ]

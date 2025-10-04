@@ -1,109 +1,104 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} Listar Usuários {% endblock %}
+{% block title %}Listar Usuários{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/usuarios.css' %}">
+{% endblock %}
 
 {% block content %}
-<br><br><br>
-<div class="container">
-    {% for user in usuarios %}
-        <div class="col-md-12">
-            <div class="card b-1 hover-shadow mb-20">
-                <div class="media card-body">
-                    <div class="media-left pr-12">
-                        <img class="avatar avatar-xl no-radius" src="{% static 'user.jpg' %}" alt="...">
+<div class="usuarios-container-semprevivas">
+    <div class="container">
+        {% for user in usuarios %}
+            <div class="usuarios-card-semprevivas">
+                <div class="usuarios-media-semprevivas">
+                    <img class="usuarios-avatar-semprevivas" src="{% static  'images/user.jpg' %}" alt="{{ user.username }}">
+                    <div class="usuarios-info-semprevivas">
+                        <h4 class="usuarios-username-semprevivas">{{ user.username }}</h4>
+                        <p class="usuarios-name-semprevivas">{{ user.first_name }} {{ user.last_name }}</p>
                     </div>
-                    <div class="media-body">
-                        <div class="mb-2">
-                            <span class="fs-20 pr-16">{{ user.username }}</span>
-                        </div>
-                        <small class="fs-16 fw-300 ls-1">{{ user.first_name }} {{ user.last_name }}</small>
-                    </div>
-                    <div class="media-right text-right d-none d-md-block">
-                        <span class="badge badge-pill badge-primary">
-                            {{ user.groups.all|join:", " }}
-                        </span>
-                    </div>
+                    <span class="usuarios-badge-semprevivas">
+                        {{ user.groups.all|join:", " }}
+                    </span>
                 </div>
-                <footer class="card-footer flexbox align-items-center">
-                    <div>
+                <footer class="usuarios-footer-semprevivas">
+                    <div class="usuarios-date-semprevivas">
                         <strong>Cadastrado em:</strong>
-                        <span>{{ user.date_joined|date:"d M, Y" }}</span>
+                        {{ user.date_joined|date:"d M, Y" }}
                     </div>
-                    <div class="card-hover-show d-flex gap-2">
+                    <div class="usuarios-actions-semprevivas">
+                        <div class="usuarios-btn-group-semprevivas">
+                            <form method="post" action="{% url 'atribuir_grupo' user.id 'Adm' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="usuarios-btn-role-semprevivas" title="Tornar Adm">
+                                    <i class="fas fa-user-shield text-primary"></i>
+                                </button>
+                            </form>
 
-                        {# Ícones para atribuir grupos (via POST) #}
-                        <form method="post" action="{% url 'atribuir_grupo' user.id 'Adm' %}" class="me-1">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-xs btn-light" title="Tornar Adm">
-                                <i class="fas fa-user-shield text-primary"></i>
-                            </button>
-                        </form>
+                            <form method="post" action="{% url 'atribuir_grupo' user.id 'Convidado' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="usuarios-btn-role-semprevivas" title="Tornar Convidado">
+                                    <i class="fas fa-user text-secondary"></i>
+                                </button>
+                            </form>
 
-                        <form method="post" action="{% url 'atribuir_grupo' user.id 'Convidado' %}" class="me-1">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-xs btn-light" title="Tornar Convidado">
-                                <i class="fas fa-user text-secondary"></i>
-                            </button>
-                        </form>
+                            <form method="post" action="{% url 'atribuir_grupo' user.id 'Pesquisadores' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="usuarios-btn-role-semprevivas" title="Tornar Pesquisador">
+                                    <i class="fas fa-user-graduate text-success"></i>
+                                </button>
+                            </form>
+                        </div>
 
-                        <form method="post" action="{% url 'atribuir_grupo' user.id 'Pesquisadores' %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-xs btn-light" title="Tornar Pesquisador">
-                                <i class="fas fa-user-graduate text-success"></i>
-                            </button>
-                        </form>
-
-                        <a class="btn btn-xs fs-10 btn-bold btn-warning" href="{% url 'editar_usuario' user.id %}">
+                        <a class="usuarios-btn-action-semprevivas usuarios-btn-edit-semprevivas" href="{% url 'editar_usuario' user.id %}">
                             Editar
                         </a>
-                        <a class="btn btn-xs fs-10 btn-bold btn-danger" href="{% url 'apagar_usuario' user.id %}">
+                        <a class="usuarios-btn-action-semprevivas usuarios-btn-delete-semprevivas" href="{% url 'apagar_usuario' user.id %}">
                             Excluir
                         </a>
-
                     </div>
                 </footer>
             </div>
-        </div>
-    {% empty %}
-        <p>Nenhum usuário encontrado.</p>
-    {% endfor %}
+        {% empty %}
+            <p class="usuarios-empty-semprevivas">Nenhum usuário encontrado.</p>
+        {% endfor %}
 
-    <nav>
-        <ul class="pagination justify-content-center">
-            {% if usuarios.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ usuarios.previous_page_number }}">Anterior</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">Anterior</span>
-                </li>
-            {% endif %}
-
-            {% for page_num in usuarios.paginator.page_range %}
-                {% if page_num == usuarios.number %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ page_num }}</span>
+        <nav class="usuarios-pagination-semprevivas">
+            <ul class="pagination justify-content-center">
+                {% if usuarios.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link usuarios-page-link-semprevivas" href="?page={{ usuarios.previous_page_number }}">Anterior</a>
                     </li>
                 {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+                    <li class="page-item disabled">
+                        <span class="page-link usuarios-page-link-semprevivas">Anterior</span>
                     </li>
                 {% endif %}
-            {% endfor %}
 
-            {% if usuarios.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ usuarios.next_page_number }}">Próximo</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">Próximo</span>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-    <br>
+                {% for page_num in usuarios.paginator.page_range %}
+                    {% if page_num == usuarios.number %}
+                        <li class="page-item active">
+                            <span class="page-link usuarios-page-link-semprevivas">{{ page_num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link usuarios-page-link-semprevivas" href="?page={{ page_num }}">{{ page_num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if usuarios.has_next %}
+                    <li class="page-item">
+                        <a class="page-link usuarios-page-link-semprevivas" href="?page={{ usuarios.next_page_number }}">Próximo</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link usuarios-page-link-semprevivas">Próximo</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </div>
 {% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Adicionar Pesquisador{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/adicionar_pesquisador.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="adicionar-pesquisador-container-semprevivas">
+    <div class="adicionar-pesquisador-card-semprevivas">
+        <h2 class="adicionar-pesquisador-title-semprevivas">Adicionar Pesquisador</h2>
+
+        {% if form.errors %}
+            <div class="adicionar-pesquisador-alert-semprevivas">
+                Houve um erro ao cadastrar o pesquisador. Verifique os campos e tente novamente.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="adicionar-pesquisador-form-group-semprevivas">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="adicionar-pesquisador-label-semprevivas">
+                        {{ field.label }}
+                    </label>
+                    
+                    {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="adicionar-pesquisador-select-semprevivas">
+                            <option value="">Selecione...</option>
+                            {% for choice in field.field.choices %}
+                                {% if choice.0 %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    {% elif field.field.widget.input_type == 'textarea' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="adicionar-pesquisador-textarea-semprevivas" placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">{{ field.value|default:'' }}</textarea>
+                    {% elif field.field.widget.input_type == 'url' %}
+                        <input type="url" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               value="{{ field.value|default:'' }}"
+                               class="adicionar-pesquisador-url-input-semprevivas"
+                               placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                               {% if field.field.required %}required{% endif %}>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               value="{{ field.value|default:'' }}"
+                               class="adicionar-pesquisador-input-semprevivas"
+                               placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                               {% if field.field.required %}required{% endif %}>
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                    <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                    <div class="error-list">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="adicionar-pesquisador-actions-semprevivas">
+                <button type="submit" class="adicionar-pesquisador-btn-primary">Cadastrar Pesquisador</button>
+                <a href="{% url 'listar_equipe' %}" class="adicionar-pesquisador-btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

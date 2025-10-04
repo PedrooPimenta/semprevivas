@@ -1,0 +1,165 @@
+.register-container-semprevivas {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.register-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    width: 100%;
+    max-width: 450px;
+}
+
+.register-title-semprevivas {
+    color: #2E8B57;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.register-form-group-semprevivas {
+    margin-bottom: 1.5rem;
+}
+
+.register-label-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.register-input-semprevivas {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.register-input-semprevivas:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.register-btn-semprevivas {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.register-btn-semprevivas:hover {
+    background: #228B22;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+}
+
+.register-links-semprevivas {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.register-link-semprevivas {
+    color: #2E8B57;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.register-link-semprevivas:hover {
+    color: #228B22;
+    text-decoration: underline;
+}
+
+.register-alert-semprevivas {
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: none;
+    border-left: 4px solid #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+}
+
+.register-card-semprevivas .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.register-card-semprevivas label {
+    color: #2C3E50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.register-card-semprevivas input[type="text"],
+.register-card-semprevivas input[type="email"],
+.register-card-semprevivas input[type="password"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.register-card-semprevivas input:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.register-card-semprevivas .help-block {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.register-card-semprevivas .error-block {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.register-card-semprevivas .alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border: none;
+    border-left: 4px solid #dc3545;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+@media (max-width: 768px) {
+    .register-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .register-card-semprevivas {
+        padding: 2rem 1.5rem;
+    }
+    
+    .register-title-semprevivas {
+        font-size: 1.5rem;
+    }
+}
+

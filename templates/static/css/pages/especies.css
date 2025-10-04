@@ -1,0 +1,237 @@
+.especies-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0;
+}
+
+.especies-search-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    margin-bottom: 2rem;
+}
+
+.especies-search-input-semprevivas {
+    border: 2px solid #e9ecef;
+    border-radius: 12px 0 0 12px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.especies-search-input-semprevivas:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.especies-search-btn-semprevivas {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 0 12px 12px 0;
+    padding: 0.875rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.especies-search-btn-semprevivas:hover {
+    background: #228B22;
+    transform: translateY(-1px);
+}
+
+.especies-clear-btn-semprevivas {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.875rem 1.5rem;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.especies-clear-btn-semprevivas:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.especies-table-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.especies-table-semprevivas thead {
+    background: #2E8B57;
+    color: white;
+}
+
+.especies-table-semprevivas th {
+    border: none;
+    padding: 1rem;
+    font-weight: 600;
+}
+
+.especies-table-semprevivas td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-color: rgba(169, 209, 142, 0.2);
+}
+
+.especies-table-semprevivas tbody tr:hover {
+    background: rgba(169, 209, 142, 0.1);
+}
+
+.especies-btn-primary {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.especies-btn-primary:hover {
+    background: #228B22;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 139, 87, 0.3);
+}
+
+.especies-modal-semprevivas .modal-content {
+    border-radius: 16px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+}
+
+.especies-modal-semprevivas .modal-header {
+    background: #2E8B57;
+    color: white;
+    border-radius: 16px 16px 0 0;
+    border: none;
+}
+
+.especies-modal-semprevivas .nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+}
+
+.especies-modal-semprevivas .nav-link {
+    color: #495057;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    margin-right: 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.especies-modal-semprevivas .nav-link.active {
+    background: #2E8B57;
+    color: white;
+    border: none;
+}
+
+.especies-modal-semprevivas .nav-link:hover {
+    background: rgba(46, 139, 87, 0.1);
+    color: #2E8B57;
+}
+
+.especies-modal-semprevivas .tab-content {
+    padding: 1.5rem 0;
+}
+
+.especies-pagination-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+}
+
+.especies-pagination-btn-semprevivas {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin: 0 0.2rem;
+    transition: all 0.3s ease;
+}
+
+.especies-pagination-btn-semprevivas:hover {
+    background: #228B22;
+    transform: translateY(-1px);
+}
+
+.especies-pagination-btn-semprevivas:disabled {
+    background: #6c757d;
+    opacity: 0.6;
+}
+
+.especies-alert-semprevivas {
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: none;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: rgba(40, 167, 69, 0.1);
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.alert-error {
+    background: rgba(220, 53, 69, 0.1);
+    color: #721c24;
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: #0c5460;
+    border-left-color: #17a2b8;
+}
+
+.especies-back-btn-semprevivas {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.especies-back-btn-semprevivas:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .especies-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .especies-search-semprevivas {
+        padding: 1.5rem;
+    }
+    
+    .especies-table-semprevivas {
+        font-size: 0.9rem;
+    }
+    
+    .especies-search-input-semprevivas,
+    .especies-search-btn-semprevivas,
+    .especies-clear-btn-semprevivas {
+        padding: 0.75rem 1rem;
+    }
+}

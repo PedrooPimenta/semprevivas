@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %} 
 
-{% load crispy_forms_tags %}
+{% block title %}Cadastrar{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/register.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center min-vh-90 py-3">
-    <div class="col-md-4 col-12 bg-light p-5 rounded shadow-sm">
-        <h2 class="text-center mb-4">Criar uma conta</h2>
+<div class="register-container-semprevivas">
+    <div class="register-card-semprevivas">
+        <h2 class="register-title-semprevivas">Criar uma conta</h2>
 
         {% if form.errors %}
-            <div class="alert alert-danger">
+            <div class="register-alert-semprevivas">
                 Por favor, corrija os erros abaixo:
             </div>
         {% endif %}
@@ -16,14 +22,14 @@
         <form method="post">
             {% csrf_token %}
             
-            <div class="form-group"></div>
-            {{ form|crispy }}
+            <div class="register-form-group-semprevivas">
+                {% crispy form %}
 
-            <button type="submit" class="btn btn-primary btn-block py-3 mt-3">Cadastrar</button>
+            <button type="submit" class="register-btn-semprevivas">Cadastrar</button>
         </form>
 
-        <div class="text-center mt-3">
-            <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login</a></p>
+        <div class="register-links-semprevivas">
+            <p>Já tem uma conta? <a href="{% url 'login' %}" class="register-link-semprevivas">Faça login</a></p>
         </div>
     </div>
 </div>

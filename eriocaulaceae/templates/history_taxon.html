@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block content %}
-<div class="container mt-5  mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <h2>Histórico de Alterações para: {{ taxon.scientificName }}</h2>
+{% block title %}Histórico - {{ taxon.scientificName }}{% endblock %}
 
-            <table class="table table-bordered table-striped mt-4 shadow-lg rounded">   
-                <thead class="thead-dark">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/historico.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="historico-container-semprevivas">
+    <div class="container">
+        <div class="historico-card-semprevivas">
+            <h2 class="historico-title-semprevivas">Histórico de Alterações</h2>
+            <p class="historico-subtitle-semprevivas">Espécie: {{ taxon.scientificName }}</p>
+
+            <table class="table table-hover historico-table-semprevivas">
+                <thead>
                     <tr>
                         <th>Data</th>
                         <th>Tipo</th>
@@ -19,35 +26,37 @@
                 <tbody>
                     {% for item in historico %}
                     <tr>
-                        <td>{{ item.data|date:"d/m/Y H:i" }}</td>
+                        <td class="fw-medium">{{ item.data|date:"d/m/Y H:i" }}</td>
                         <td>
                             {% if item.tipo == '+' %}
-                                Criado
+                                <span class="historico-badge-semprevivas badge-criado">Criado</span>
                             {% elif item.tipo == '~' %}
-                                Alterado
+                                <span class="historico-badge-semprevivas badge-alterado">Alterado</span>
                             {% elif item.tipo == '-' %}
-                                Deletado
+                                <span class="historico-badge-semprevivas badge-deletado">Deletado</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if item.usuario %}
-                                {{ item.usuario.username }}
+                                <span class="fw-medium">{{ item.usuario.username }}</span>
                             {% else %}
-                                <em>Desconhecido</em>
+                                <em class="text-muted">Desconhecido</em>
                             {% endif %}
                         </td>
-                        <td>
+                        <td class="historico-changes-semprevivas">
                             {% if item.diferencas %}
-                                <ul class="mb-0">
+                                <ul class="historico-changes-list-semprevivas">
                                     {% for diff in item.diferencas %}
-                                    <li>
-                                        <strong>{{ diff.field }}:</strong>
-                                        de "<em>{{ diff.old }}</em>" para "<em>{{ diff.new }}</em>"
+                                    <li class="historico-change-item-semprevivas">
+                                        <span class="historico-change-field-semprevivas">{{ diff.field }}:</span>
+                                        <span class="historico-change-values-semprevivas">
+                                            "{{ diff.old }}" → "{{ diff.new }}"
+                                        </span>
                                     </li>
                                     {% endfor %}
                                 </ul>
                             {% else %}
-                                <em>Nenhuma mudança detectada.</em>
+                                <em class="text-muted">Nenhuma mudança detectada</em>
                             {% endif %}
                         </td>
                     </tr>
@@ -56,8 +65,12 @@
             </table>
 
             {% if not historico %}
-                <div class="alert alert-info mt-4">
-                    Nenhuma alteração registrada para este táxon.
+                <div class="historico-empty-semprevivas">
+                    <div class="historico-empty-icon-semprevivas">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h4>Nenhuma alteração registrada</h4>
+                    <p class="mb-0">Não há histórico de alterações para esta espécie.</p>
                 </div>
             {% endif %}
         </div>

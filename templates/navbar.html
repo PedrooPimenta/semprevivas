@@ -1,90 +1,60 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm w-100">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm w-100 nav-custom-semprevivas">
   <div class="container-fluid">
-    <img src="{% static 'logo2.svg' %}" alt="Company Logo" width="120" height="auto" class="me-2">
+    <a class="navbar-brand nav-brand-semprevivas" href="{% url 'home' %}">
+      <div class="nav-logo-container-semprevivas">
+        <i class="bi bi-flower3 nav-logo-icon-semprevivas"></i>
+        <span class="nav-logo-text-semprevivas">Eriocaulaceae</span>
+      </div>
+    </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler nav-toggler-semprevivas" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavSemprevivas"
+      aria-controls="navbarNavSemprevivas" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="collapse navbar-collapse" id="navbarNavSemprevivas">
       {% if user.is_authenticated %}
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-        <li class="nav-item active">
-          <a class="nav-link text-dark" href="{% url 'home' %}">
-            <i class="bi bi-house-fill fs-4"></i> Home
+        <li class="nav-item nav-item-semprevivas">
+          <a class="nav-link nav-link-semprevivas" href="{% url 'home' %}">
+            <i class="bi bi-house-fill nav-icon-semprevivas"></i> Home
           </a>
         </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-dark" href="#" id="especiesDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-flower1 fs-4"></i> Eriocaulaceae
+        {% for group in request.user.groups.all %}
+          {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
+          <li class="nav-item nav-item-semprevivas">
+            <a href="{% url 'dashboard' %}" class="nav-link nav-link-semprevivas">
+              <i class="bi bi-speedometer2 nav-icon-semprevivas"></i> Dashboard
+            </a>
+          </li>
+          {% endif %}
+        {% endfor %}
+
+        <li class="nav-item dropdown nav-item-semprevivas">
+          <a class="nav-link dropdown-toggle nav-link-semprevivas" href="#" id="especiesDropdownSemprevivas" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-flower1 nav-icon-semprevivas"></i> Eriocaulaceae
           </a>
-          <ul class="dropdown-menu" aria-labelledby="especiesDropdown">
+          <ul class="dropdown-menu dropdown-menu-semprevivas" aria-labelledby="especiesDropdownSemprevivas">
             <li>
-              <a class="dropdown-item" href="{% url 'listar_especies' %}">
-                <i class="bi bi-list-ul fs-5 me-2"></i> Listar Espécies
+              <a class="dropdown-item dropdown-item-semprevivas" href="{% url 'listar_especies' %}">
+                <i class="bi bi-list-ul nav-icon-semprevivas me-2"></i> Listar Espécies
               </a>
             </li>
-            {% for group in request.user.groups.all %}
-              {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
-              <li>
-                <a class="dropdown-item" href="{% url 'adicionar_taxon' %}">
-                  <i class="bi bi-plus-circle fs-5 me-2"></i> Adicionar
-                </a>
-              </li>
-              {% endif %}
-            {% endfor %}
           </ul>
         </li>
 
         {% for group in request.user.groups.all %}
-          {% if group.name == 'Adm' %}
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle text-dark" href="#" id="equipeDropdown" role="button"
-                 data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-people fs-4"></i> Equipe
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="equipeDropdown">
-                <li>
-                  <a class="dropdown-item" href="{% url 'listar_equipe' %}">
-                    <i class="bi bi-list-ul fs-5 me-2"></i> Listar Equipe
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'adicionar_pesquisador' %}">
-                    <i class="bi bi-person-plus fs-5 me-2"></i> Adicionar Pesquisador
-                  </a>
-                </li>
-              </ul>
-            </li>
-          {% endif %}
-        {% endfor %}
-
-        {% for group in request.user.groups.all %}
-          {% if group.name == 'Adm' %}
-            <li class="nav-item">
-              <a href="{% url 'listar_solicitacoes' %}" class="nav-link text-dark">
-                <i class="bi bi-file-earmark-text fs-4"></i> Solicitações
-                {% if solicitacoes_pendentes > 0 %}
-                  <span class="badge bg-danger ms-2">{{ solicitacoes_pendentes }}</span>
-                {% endif %}
-              </a>
-            </li>
-          {% endif %}
-        {% endfor %}
-
-        {% for group in request.user.groups.all %}
-          {% if group.name == 'Adm' %}
-            <li class="nav-item">
-              <a href="{% url 'listar_usuarios' %}" class="nav-link text-dark">
-                <i class="bi bi-people-fill fs-4"></i> Usuários
-              </a>
-            </li>
+          {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
+          <li class="nav-item nav-item-semprevivas">
+            <a class="nav-link nav-link-semprevivas" href="{% url 'adicionar_taxon' %}">
+              <i class="bi bi-plus-circle nav-icon-semprevivas"></i> Adicionar
+            </a>
+          </li>
           {% endif %}
         {% endfor %}
 
@@ -93,35 +63,36 @@
 
       <div class="d-flex align-items-center ms-auto">
         {% if user.is_authenticated %}
-          <div class="dropdown">
-            <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" type="button"
-              id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false"
-              style="cursor: pointer; text-decoration: none; border: none; outline: none;">
-              <i class="bi bi-person-fill fs-4 me-2"></i>
-              <span class="d-none d-lg-inline">Olá, {{ user.username }}!</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-              <li>
-                <a class="dropdown-item" href="{% url 'altera_senha' %}">
-                  <i class="bi bi-key fs-5 me-2"></i> Alterar Senha
-                </a>
-              </li>
-              <li><hr class="dropdown-divider"></li>
-              <li>
-                <form method="POST" action="{% url 'logout' %}" class="d-inline">
-                  {% csrf_token %}
-                  <button type="submit" class="dropdown-item text-danger">
-                    <i class="bi bi-box-arrow-right fs-5 me-2"></i> Sair
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </div>
+        <div class="dropdown dropdown-semprevivas">
+          <button class="btn btn-link dropdown-toggle nav-user-semprevivas" type="button"
+            id="userDropdownSemprevivas" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="nav-user-avatar-semprevivas">
+              {{ user.username|first|upper }}
+            </div>
+            <span class="d-none d-lg-inline">Olá, {{ user.username }}!</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-semprevivas" aria-labelledby="userDropdownSemprevivas">
+            <li>
+              <a class="dropdown-item dropdown-item-semprevivas" href="{% url 'altera_senha' %}">
+                <i class="bi bi-key nav-icon-semprevivas me-2"></i> Alterar Senha
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item dropdown-item-semprevivas text-danger">
+                  <i class="bi bi-box-arrow-right nav-icon-semprevivas me-2"></i> Sair
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
         {% else %}
-          <a style="background-color: #01949A;" href="{% url 'login' %}"
-             class="btn btn-info text-white rounded-pill px-4 py-2 ms-3">Entrar</a>
+        <a href="{% url 'login' %}" class="btn btn-login-semprevivas">Entrar</a>
         {% endif %}
       </div>
+
     </div>
   </div>
 </nav>

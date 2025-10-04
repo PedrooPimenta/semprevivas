@@ -100,7 +100,7 @@ class Taxon(models.Model):
     distribuicao_biomas =models.TextField(null=True, blank=True)
     history = HistoricalRecords()
     status = models.BooleanField(default=False, verbose_name="Ativo")
-    created_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     
 
     fitofisionomias = models.TextField(null=True, blank=True)

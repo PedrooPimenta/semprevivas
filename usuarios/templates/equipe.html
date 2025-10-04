@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pesquisadores{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/pesquisadores.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pesquisadores-container-semprevivas">
+    <div class="container">
+        <h2 class="pesquisadores-title-semprevivas text-center">Pesquisadores</h2>
+
+        {% for pesquisador in pesquisadores %}
+        <div class="pesquisadores-card-semprevivas">
+            <div class="pesquisadores-media-semprevivas">
+                <img class="pesquisadores-avatar-semprevivas" src="{% static 'images/user.jpg' %}" alt="{{ pesquisador.username }}">
+                <div class="flex-grow-1">
+                    <h4 class="pesquisadores-name-semprevivas">{{ pesquisador.username }}</h4>
+                    <small class="text-muted">Pesquisador</small>
+                </div>
+                <span class="pesquisadores-nivel-semprevivas">{{ pesquisador.nivel }}</span>
+            </div>
+
+            <footer class="pesquisadores-footer-semprevivas">
+                <div class="pesquisadores-social-semprevivas">
+                    {% if pesquisador.lattes %}
+                    <a href="{{ pesquisador.lattes }}" class="pesquisadores-btn-social-semprevivas btn-outline-dark" target="_blank">
+                        <i class="ai ai-lattes-square"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if pesquisador.linkedin %}
+                    <a href="{{ pesquisador.linkedin }}" class="pesquisadores-btn-social-semprevivas btn-outline-primary" target="_blank">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if pesquisador.researchgate %}
+                    <a href="{{ pesquisador.researchgate }}" class="pesquisadores-btn-social-semprevivas btn-outline-success" target="_blank">
+                        <i class="ai ai-researchgate-square"></i>
+                    </a>
+                    {% endif %}
+
+                    {% if pesquisador.email %}
+                    <a href="mailto:{{ pesquisador.email }}" class="pesquisadores-btn-social-semprevivas btn-outline-secondary">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if is_adm %}
+                <div class="pesquisadores-actions-semprevivas">
+                    <a class="pesquisadores-btn-action-semprevivas btn-warning" href="{% url 'editar_pesquisador' pesquisador.id %}">
+                        Editar
+                    </a>
+                    <a class="pesquisadores-btn-action-semprevivas btn-danger" href="{% url 'apagar_pesquisador' pesquisador.id %}">
+                        Excluir
+                    </a>
+                </div>
+                {% endif %}
+            </footer>
+        </div>
+        {% empty %}
+        <p class="pesquisadores-empty-semprevivas">Nenhum pesquisador cadastrado.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

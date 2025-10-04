@@ -20,8 +20,10 @@ from .forms import (
 )
 from .models import Taxon
 
+
 def eriocaulaceae_home(request):
     return render(request, "eriocaulaceae_home.html")
+
 
 @login_required
 def eriocaulaceae_adicionar(request):
@@ -35,10 +37,12 @@ def eriocaulaceae_adicionar(request):
         form = TaxonForm()
     return render(request, 'eriocaulaceae_adicionar.html', {'form': form})
 
+
 @login_required
 def listar_especies(request):
     termo_busca = request.GET.get('q', '')
-    queryset = Taxon.objects.filter(status=True)
+    queryset = Taxon.objects.filter(status=True).order_by('created_at')
+
     solicitacoes_pendentes = Taxon.objects.filter(status=False).count()
 
     if termo_busca:
@@ -69,7 +73,8 @@ def listar_especies(request):
 
     for taxon in page_obj:
         if taxon.estado:
-            nomes_completos = [estados.get(sigla) for sigla in eval(taxon.estado)]
+            nomes_completos = [estados.get(sigla)
+                               for sigla in eval(taxon.estado)]
             taxon.estado = nomes_completos
         else:
             taxon.estado = None
@@ -81,6 +86,7 @@ def listar_especies(request):
     }
     return render(request, 'listar_especies.html', context)
 
+
 @login_required
 def buscar_especies(request):
     group_required = ['Adm', 'Pesquisadores', 'Convidado']
@@ -90,9 +96,11 @@ def buscar_especies(request):
     if request.method == 'POST':
         termo_busca = request.POST.get('termo_busca')
         especies = Taxon.objects.filter(
-            Q(scientificName__icontains=termo_busca) | Q(acceptedNameUsage__icontains=termo_busca)
+            Q(scientificName__icontains=termo_busca) | Q(
+                acceptedNameUsage__icontains=termo_busca)
         )
     return render(request, 'buscar_especies.html', {'especies': especies, 'termo_busca': termo_busca})
+
 
 @login_required
 def editar_especie(request, especie_id):
@@ -106,6 +114,7 @@ def editar_especie(request, especie_id):
         form = TaxonForm(instance=especie)
     return render(request, 'editar_especie.html', {'form': form})
 
+
 @login_required
 def apagar_especie(request, especie_id):
     especie = get_object_or_404(Taxon, id=especie_id)
@@ -113,6 +122,7 @@ def apagar_especie(request, especie_id):
         especie.delete()
         return redirect('listar_especies')
     return render(request, 'apagar_especie.html', {'especie': especie})
+
 
 @login_required
 def set_especie_false(request, especie_id):
@@ -123,6 +133,7 @@ def set_especie_false(request, especie_id):
         return redirect('listar_especies')
     return render(request, 'apagar_especie.html', {'especie': especie})
 
+
 @login_required
 def toggle_status(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
@@ -130,13 +141,15 @@ def toggle_status(request, pk):
     taxon.save()
     return redirect('listar_solicitacoes')
 
+
 @login_required
 def list_solicitacoes(request):
     if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
         return render(request, 'access_denied.html', status=403)
-    
+
     solicitacoes = Taxon.objects.filter(status=False)
     return render(request, 'list_solicitacoes.html', {'solicitacoes': solicitacoes})
+
 
 @login_required
 def adicionar_especie(request):
@@ -146,11 +159,13 @@ def adicionar_especie(request):
             taxon_obj = form.save(commit=False)
             taxon_obj.status = False
             taxon_obj.save()
-            messages.info(request, 'Seu cadastro será verificado por um administrador.')
+            messages.info(
+                request, 'Seu cadastro será verificado por um administrador.')
             return redirect('listar_especies')
     else:
         form = TaxonForm()
     return render(request, 'adicionar_especie.html', {'form': form})
+
 
 def upload_csv(request):
     if request.method == 'POST':
@@ -196,6 +211,7 @@ def upload_csv(request):
         form = CSVUploadForm()
     return render(request, 'upload_csv.html', {'form': form})
 
+
 class TaxonWizard(LoginRequiredMixin, SessionWizardView):
     form_list = [
         TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
@@ -217,7 +233,8 @@ class TaxonWizard(LoginRequiredMixin, SessionWizardView):
             data.update(form.cleaned_data)
         data['status'] = False
         Taxon.objects.create(**data)
-        messages.info(self.request, 'Seu cadastro será analisado por um administrador.')
+        messages.info(
+            self.request, 'Seu cadastro será analisado por um administrador.')
         return HttpResponseRedirect(reverse('listar_especies'))
 
 
@@ -297,7 +314,8 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.foto = data.get('foto')
 
             taxon.save()
-            messages.success(self.request, 'Atualização realizada com sucesso.')
+            messages.success(
+                self.request, 'Atualização realizada com sucesso.')
         else:
             messages.info(self.request, 'Nenhuma mudança detectada.')
 
@@ -305,8 +323,11 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             'done': True,
             'taxon': taxon
         })
-    
+
+
 login_required
+
+
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
     historico = taxon.history.all().order_by('history_date')
@@ -316,7 +337,7 @@ def history_Taxon(request, pk):
     for item in historico:
         diffs = []
         if anterior:
-            delta = item.diff_against(anterior)  
+            delta = item.diff_against(anterior)
             for change in delta.changes:
                 if change.field == 'status':
                     continue

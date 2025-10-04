@@ -1,56 +1,140 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Editar Espécie{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/editar_especie.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-4 p-5 rounded shadow-lg py-4">
+<div class="editar-especie-container-semprevivas">
+    <div class="container">
+        <div class="editar-especie-card-semprevivas">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="editar-especie-alert-semprevivas alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} text-center">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+            {% if done %}
+                <div class="editar-especie-success-semprevivas">
+                    <div class="editar-especie-success-icon-semprevivas">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2 class="editar-especie-success-title-semprevivas">Espécie atualizada com sucesso!</h2>
+                    
+                    <div class="editar-especie-details-semprevivas">
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">taxonID:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.taxonID }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Nome Científico:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.scientificName }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Reino:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.kingdom }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Filo:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.phylum }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Classe:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.classe }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Ordem:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.order }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Família:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.family }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Gênero:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.genus }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Epíteto Específico:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.specificEpithet }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Epíteto Infraespecífico:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.infraspecificEpithet }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Rank:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.taxonRank }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Referências:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.references }}</span>
+                        </div>
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Citação Bibliográfica:</span>
+                            <span class="editar-especie-detail-value-semprevivas">{{ taxon.bibliographicCitation }}</span>
+                        </div>
+                        {% if taxon.foto %}
+                        <div class="editar-especie-detail-item-semprevivas">
+                            <span class="editar-especie-detail-label-semprevivas">Foto:</span>
+                            <div>
+                                <img src="{{ taxon.foto.url }}" alt="Foto do táxon" class="editar-especie-image-semprevivas">
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
 
-    {% if done %}
-        <h2 class="text-center mb-4">Táxon atualizado com sucesso</h2>
-        <div class="mt-4">
-            <p><strong>taxonID:</strong> {{ taxon.taxonID }}</p>
-            <p><strong>Nome Científico:</strong> {{ taxon.scientificName }}</p>
-            <p><strong>Reino:</strong> {{ taxon.kingdom }}</p>
-            <p><strong>Filo:</strong> {{ taxon.phylum }}</p>
-            <p><strong>Classe:</strong> {{ taxon.classe }}</p>
-            <p><strong>Ordem:</strong> {{ taxon.order }}</p>
-            <p><strong>Família:</strong> {{ taxon.family }}</p>
-            <p><strong>Gênero:</strong> {{ taxon.genus }}</p>
-            <p><strong>Epíteto Específico:</strong> {{ taxon.specificEpithet }}</p>
-            <p><strong>Epíteto Infraespecífico:</strong> {{ taxon.infraspecificEpithet }}</p>
-            <p><strong>Rank:</strong> {{ taxon.taxonRank }}</p>
-            <p><strong>Referências:</strong> {{ taxon.references }}</p>
-            <p><strong>Citação Bibliográfica:</strong> {{ taxon.bibliographicCitation }}</p>
-            {% if taxon.foto %}
-                <p><strong>Foto:</strong><br><img src="{{ taxon.foto.url }}" alt="Foto do táxon" class="img-fluid" width="300"></p>
+                    <div class="editar-especie-actions-semprevivas">
+                        <a href="{% url 'editar_taxon' pk=taxon.pk %}" class="editar-especie-btn-warning">
+                            <i class="fas fa-edit me-2"></i>Editar Novamente
+                        </a>
+                        <a href="{% url 'listar_especies' %}" class="editar-especie-btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar à Lista
+                        </a>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="editar-especie-header-semprevivas">
+                    <h2 class="editar-especie-title-semprevivas">Editar Espécie</h2>
+                    <p class="editar-especie-subtitle-semprevivas">
+                        Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}
+                    </p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" class="editar-especie-form-semprevivas">
+                    {% csrf_token %}
+                    {{ wizard.management_form }}
+                    
+                    <div class="editar-especie-form-group-semprevivas">
+                        {{ wizard.form.as_p }}
+                    </div>
+
+                    <div class="editar-especie-form-actions-semprevivas">
+                        {% if wizard.steps.prev %}
+                            <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="editar-especie-btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Voltar
+                            </button>
+                        {% else %}
+                            <div></div> 
+                        {% endif %}
+                        
+                        <button type="submit" class="editar-especie-btn-primary">
+                            {% if wizard.steps.next %}
+                                Próximo <i class="fas fa-arrow-right ms-2"></i>
+                            {% else %}
+                                Finalizar <i class="fas fa-check ms-2"></i>
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
             {% endif %}
         </div>
-        <div class="mt-4 text-center">
-            <a href="{% url 'editar_taxon' pk=taxon.pk %}" class="btn btn-warning">Editar Novamente</a>
-            <a href="{% url 'listar_especies' %}" class="btn btn-secondary">Voltar à Lista</a>
-        </div>
-
-    {% else %}
-        <h2 class="text-center mb-4">Passo {{ wizard.steps.step1 }} de {{ wizard.steps.count }}</h2>
-        <form method="post" enctype="multipart/form-data" class="p-4 border rounded bg-white">
-            {% csrf_token %}
-            {{ wizard.management_form }}
-            <div class="mb-3">
-                {{ wizard.form.as_p }}
-            </div>
-            <div class="d-flex justify-content-between">
-                {% if wizard.steps.prev %}
-                    <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">Voltar</button>
-                {% endif %}
-                <button type="submit" class="btn btn-primary">Próximo</button>
-            </div>
-        </form>
-    {% endif %}
+    </div>
 </div>
 {% endblock %}

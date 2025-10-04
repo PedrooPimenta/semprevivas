@@ -1,0 +1,128 @@
+.login-container-semprevivas {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.login-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-title-semprevivas {
+    color: #2E8B57;
+    font-weight: 700;
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-form-group-semprevivas {
+    margin-bottom: 1.5rem;
+}
+
+.login-label-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.login-input-semprevivas {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+}
+
+.login-input-semprevivas:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.login-btn-semprevivas {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.login-btn-semprevivas:hover {
+    background: #228B22;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+}
+
+.login-links-semprevivas {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.login-link-semprevivas {
+    color: #2E8B57;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-link-semprevivas:hover {
+    color: #228B22;
+    text-decoration: underline;
+}
+
+.login-alert-semprevivas {
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border: none;
+}
+
+.alert-danger {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-warning {
+    background: rgba(255, 193, 7, 0.1);
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+@media (max-width: 768px) {
+    .login-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .login-card-semprevivas {
+        padding: 2rem 1.5rem;
+    }
+    
+    .login-title-semprevivas {
+        font-size: 1.5rem;
+    }
+}

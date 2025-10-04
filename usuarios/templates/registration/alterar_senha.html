@@ -1,18 +1,60 @@
 {% extends 'base.html' %}
 
-{% block title %} Página Inicial {% endblock %}
+{% block title %}Alterar Senha{% endblock %}
 {% load crispy_forms_tags %}
 
-{% block content %} 
+{% block content %}
+<div class="password-change-container-semprevivas">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="password-change-card-semprevivas">
+                    <div class="password-change-header-semprevivas">
+                        <i class="bi bi-key-fill password-change-icon-semprevivas"></i>
+                        <h2 class="password-change-title-semprevivas">Alterar Senha</h2>
+                        <p class="password-change-subtitle-semprevivas">Digite sua nova senha abaixo</p>
+                    </div>
 
-  <h2>Change password</h2>
+                    <form method="post" class="password-change-form-semprevivas">
+                        {% csrf_token %}
+                        
+                        <div class="password-change-fields-semprevivas">
+                            {% for field in form %}
+                            <div class="form-group-semprevivas">
+                                <label for="{{ field.id_for_label }}" class="form-label-semprevivas">
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                <small class="form-help-semprevivas">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                <div class="form-errors-semprevivas">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Change">
-</form>
+                        <div class="password-change-actions-semprevivas">
+                            <button type="submit" class="btn-password-change-semprevivas">
+                                <i class="bi bi-check-lg me-2"></i>
+                                Alterar Senha
+                            </button>
+                            <a href="{% url 'dashboard' %}" class="btn-password-back-semprevivas">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Voltar ao Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<a href="{% url 'dashboard' %}">Back to dashboard</a>
+<style>
+
+</style>
 {% endblock %}
-

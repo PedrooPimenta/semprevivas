@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "multiselectfield",
     "home",
-    "equipe",
     "usuarios",
     "eriocaulaceae",
     'formtools',
@@ -139,7 +138,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "templates/static/images"),
+    os.path.join(BASE_DIR, "templates/static/"),
 ]
 
 
@@ -169,3 +168,5 @@ LOGOUT_REDIRECT_URL = "/"  # logout
 
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1025
+
+AUTH_USER_MODEL = "usuarios.CustomUser"

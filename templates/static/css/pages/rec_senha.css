@@ -1,0 +1,183 @@
+/*pagina de recuperar senha*/
+.password-change-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding-top: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.password-change-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(169, 209, 142, 0.2);
+}
+
+.password-change-header-semprevivas {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.password-change-icon-semprevivas {
+    font-size: 3rem;
+    color: #2E8B57;
+    margin-bottom: 1rem;
+}
+
+.password-change-title-semprevivas {
+    color: #2E8B57;
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.password-change-subtitle-semprevivas {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.password-change-form-semprevivas {
+    margin-top: 2rem;
+}
+
+.password-change-fields-semprevivas {
+    margin-bottom: 2rem;
+}
+
+.form-group-semprevivas {
+    margin-bottom: 1.5rem;
+}
+
+.form-label-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.password-change-form-semprevivas input[type="password"] {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fff;
+    color: #495057;
+}
+
+.password-change-form-semprevivas input[type="password"]:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+    background: #fff;
+}
+
+.form-help-semprevivas {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.form-errors-semprevivas {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    background: rgba(220, 53, 69, 0.1);
+    padding: 0.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #dc3545;
+}
+
+.password-change-actions-semprevivas {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-password-change-semprevivas {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-password-change-semprevivas:hover {
+    background: #228B22;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+    color: white;
+}
+
+.btn-password-back-semprevivas {
+    background: transparent;
+    color: #6c757d;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1rem 2rem;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-password-back-semprevivas:hover {
+    background: #f8f9fa;
+    border-color: #2E8B57;
+    color: #2E8B57;
+    transform: translateY(-1px);
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .password-change-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .password-change-card-semprevivas {
+        padding: 2rem 1.5rem;
+    }
+    
+    .password-change-title-semprevivas {
+        font-size: 1.5rem;
+    }
+    
+    .password-change-actions-semprevivas {
+        gap: 0.75rem;
+    }
+    
+    .btn-password-change-semprevivas,
+    .btn-password-back-semprevivas {
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+.password-change-form-semprevivas input[type="password"]::placeholder {
+    color: #adb5bd;
+}
+
+.password-change-form-semprevivas input[type="password"]:valid {
+    border-color: #28a745;
+}
+
+.password-change-form-semprevivas input[type="password"]:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: #dc3545;
+}

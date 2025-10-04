@@ -1,0 +1,133 @@
+.pesquisadores-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0;
+}
+
+.pesquisadores-title-semprevivas {
+    color: #2E8B57;
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+}
+
+.pesquisadores-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.pesquisadores-card-semprevivas:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.pesquisadores-media-semprevivas {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pesquisadores-avatar-semprevivas {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #A9D18E;
+}
+
+.pesquisadores-name-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.pesquisadores-nivel-semprevivas {
+    background: #2E8B57;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.pesquisadores-footer-semprevivas {
+    background: rgba(248, 249, 250, 0.8);
+    border-top: 1px solid rgba(169, 209, 142, 0.2);
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.pesquisadores-social-semprevivas {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.pesquisadores-btn-social-semprevivas {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 2px solid;
+}
+
+.pesquisadores-btn-social-semprevivas:hover {
+    transform: translateY(-2px);
+}
+
+.pesquisadores-actions-semprevivas {
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pesquisadores-card-semprevivas:hover .pesquisadores-actions-semprevivas {
+    opacity: 1;
+}
+
+.pesquisadores-btn-action-semprevivas {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pesquisadores-empty-semprevivas {
+    color: #6c757d;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 3rem;
+}
+
+@media (max-width: 768px) {
+    .pesquisadores-media-semprevivas {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .pesquisadores-footer-semprevivas {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .pesquisadores-actions-semprevivas {
+        opacity: 1;
+    }
+}

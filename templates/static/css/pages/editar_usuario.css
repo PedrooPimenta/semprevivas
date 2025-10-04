@@ -1,0 +1,194 @@
+.editar-usuario-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0;
+}
+
+.editar-usuario-card-semprevivas {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    overflow: hidden;
+}
+
+.editar-usuario-nav-semprevivas {
+    background: #2E8B57;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(169, 209, 142, 0.2);
+}
+
+.editar-usuario-nav-link-semprevivas {
+    color: white !important;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.editar-usuario-nav-link-semprevivas.active {
+    border-bottom-color: white;
+}
+
+.editar-usuario-profile-card-semprevivas {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    overflow: hidden;
+}
+
+.editar-usuario-profile-header-semprevivas {
+    background: #2E8B57;
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.editar-usuario-profile-body-semprevivas {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.editar-usuario-avatar-semprevivas {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #A9D18E;
+    margin-bottom: 1rem;
+}
+
+.editar-usuario-details-card-semprevivas {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(169, 209, 142, 0.2);
+    overflow: hidden;
+}
+
+.editar-usuario-details-header-semprevivas {
+    background: #2E8B57;
+    color: white;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.editar-usuario-details-body-semprevivas {
+    padding: 1.5rem;
+}
+
+.editar-usuario-form-group-semprevivas {
+    margin-bottom: 1.2rem;
+}
+
+.editar-usuario-label-semprevivas {
+    color: #2C3E50;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.editar-usuario-input-semprevivas {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #fff;
+    height: 42px;
+}
+
+.editar-usuario-input-semprevivas:focus {
+    outline: none;
+    border-color: #2E8B57;
+    box-shadow: 0 0 0 2px rgba(46, 139, 87, 0.1);
+}
+
+.editar-usuario-actions-semprevivas {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(169, 209, 142, 0.2);
+}
+
+.editar-usuario-btn-primary {
+    background: #2E8B57;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.editar-usuario-btn-primary:hover {
+    background: #228B22;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(46, 139, 87, 0.3);
+}
+
+.editar-usuario-btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.editar-usuario-btn-secondary:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+    color: white;
+}
+
+.editar-usuario-error-semprevivas {
+    color: #dc3545;
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .editar-usuario-container-semprevivas {
+        padding: 1rem;
+    }
+    
+    .editar-usuario-nav-semprevivas {
+        padding: 1rem;
+    }
+    
+    .editar-usuario-profile-body-semprevivas,
+    .editar-usuario-details-body-semprevivas {
+        padding: 1rem;
+    }
+    
+    .editar-usuario-avatar-semprevivas {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .editar-usuario-actions-semprevivas {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .editar-usuario-btn-primary,
+    .editar-usuario-btn-secondary {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}

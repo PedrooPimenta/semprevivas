@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editar Pesquisador{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/editar_pesquisador.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="editar-pesquisador-container-semprevivas">
+    <div class="editar-pesquisador-card-semprevivas">
+        <h2 class="editar-pesquisador-title-semprevivas">Editar Pesquisador</h2>
+
+        {% if form.errors %}
+            <div class="editar-pesquisador-alert-semprevivas">
+                Houve um erro ao editar o pesquisador. Verifique os campos e tente novamente.
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="editar-pesquisador-form-group-semprevivas">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="editar-pesquisador-label-semprevivas">
+                        {{ field.label }}
+                    </label>
+                    
+                    {% if field.field.widget.input_type == 'select' %}
+                        <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="editar-pesquisador-select-semprevivas">
+                            {% for choice in field.field.choices %}
+                                <option value="{{ choice.0 }}" {% if choice.0 == field.value %}selected{% endif %}>
+                                    {{ choice.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% elif field.field.widget.input_type == 'textarea' %}
+                        <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="editar-pesquisador-textarea-semprevivas">{{ field.value|default:'' }}</textarea>
+                    {% else %}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               value="{{ field.value|default:'' }}"
+                               class="editar-pesquisador-input-semprevivas"
+                               {% if field.field.required %}required{% endif %}>
+                    {% endif %}
+                    
+                    {% if field.help_text %}
+                    <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                    <div class="error-list">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="editar-pesquisador-actions-semprevivas">
+                <button type="submit" class="editar-pesquisador-btn-primary">Salvar Alterações</button>
+                <a href="{% url 'listar_equipe' %}" class="editar-pesquisador-btn-secondary">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
