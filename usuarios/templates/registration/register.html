@@ -12,7 +12,17 @@
 <div class="register-container-semprevivas">
     <div class="register-card-semprevivas">
         <h2 class="register-title-semprevivas">Criar uma conta</h2>
-
+           {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="especies-alert-semprevivas alert-{{ message.tags|default:'info' }}">
+                {% if message.tags == "success" %}✅{% elif message.tags == "error" %}❌{% elif message.tags == "warning" %}⚠️{% else %}ℹ️{% endif %}
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% if form.errors %}
             <div class="register-alert-semprevivas">
                 Por favor, corrija os erros abaixo:

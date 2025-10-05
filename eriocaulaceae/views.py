@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -10,7 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from formtools.wizard.views import SessionWizardView
-from django.contrib.auth.mixins import LoginRequiredMixin,   UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 import pandas as pd
 from .forms import (
@@ -27,7 +27,6 @@ def eriocaulaceae_home(request):
 
 @login_required
 def eriocaulaceae_adicionar(request):
-    group_required = 'administradores'
     if request.method == 'POST':
         form = TaxonForm(request.POST)
         if form.is_valid():
@@ -42,9 +41,7 @@ def eriocaulaceae_adicionar(request):
 def listar_especies(request):
     termo_busca = request.GET.get('q', '')
     queryset = Taxon.objects.filter(status=True).order_by('created_at')
-
     solicitacoes_pendentes = Taxon.objects.filter(status=False).count()
-
     if termo_busca:
         queryset = queryset.filter(
             Q(scientificName__icontains=termo_busca) |
@@ -53,14 +50,11 @@ def listar_especies(request):
             Q(estado__icontains=termo_busca) |
             Q(paises__icontains=termo_busca)
         )
-
     if not queryset.exists():
         messages.info(request, 'Nenhuma espécie encontrada.')
-
     paginator = Paginator(queryset, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     estados = {
         'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
         'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
@@ -70,7 +64,6 @@ def listar_especies(request):
         'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
         'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
     }
-
     for taxon in page_obj:
         if taxon.estado:
             nomes_completos = [estados.get(sigla)
@@ -78,7 +71,6 @@ def listar_especies(request):
             taxon.estado = nomes_completos
         else:
             taxon.estado = None
-
     context = {
         'page_obj': page_obj,
         'termo_busca': termo_busca,
@@ -89,15 +81,13 @@ def listar_especies(request):
 
 @login_required
 def buscar_especies(request):
-    group_required = ['Adm', 'Pesquisadores', 'Convidado']
     especies = []
     termo_busca = 'Erio'
-
     if request.method == 'POST':
         termo_busca = request.POST.get('termo_busca')
         especies = Taxon.objects.filter(
-            Q(scientificName__icontains=termo_busca) | Q(
-                acceptedNameUsage__icontains=termo_busca)
+            Q(scientificName__icontains=termo_busca) |
+            Q(acceptedNameUsage__icontains=termo_busca)
         )
     return render(request, 'buscar_especies.html', {'especies': especies, 'termo_busca': termo_busca})
 
@@ -108,8 +98,13 @@ def editar_especie(request, especie_id):
     if request.method == 'POST':
         form = TaxonForm(request.POST, instance=especie)
         if form.is_valid():
-            form.save()
-            return redirect('buscar_especies')
+            especie = form.save(commit=False)
+            especie.status = False
+            especie.tipo_solicitacao = 'edicao'
+            especie.save()
+            messages.info(
+                request, 'Edição enviada para análise do administrador.')
+            return redirect('listar_especies')
     else:
         form = TaxonForm(instance=especie)
     return render(request, 'editar_especie.html', {'form': form})
@@ -120,16 +115,6 @@ def apagar_especie(request, especie_id):
     especie = get_object_or_404(Taxon, id=especie_id)
     if request.method == 'POST':
         especie.delete()
-        return redirect('listar_especies')
-    return render(request, 'apagar_especie.html', {'especie': especie})
-
-
-@login_required
-def set_especie_false(request, especie_id):
-    especie = get_object_or_404(Taxon, id=especie_id)
-    if request.method == 'POST':
-        especie.status = False
-        especie.save()
         return redirect('listar_especies')
     return render(request, 'apagar_especie.html', {'especie': especie})
 
@@ -146,9 +131,19 @@ def toggle_status(request, pk):
 def list_solicitacoes(request):
     if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
         return render(request, 'access_denied.html', status=403)
-
     solicitacoes = Taxon.objects.filter(status=False)
     return render(request, 'list_solicitacoes.html', {'solicitacoes': solicitacoes})
+
+
+@login_required
+def negar_edicao(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    if taxon.tipo_solicitacao == 'edicao':
+        taxon.status = True
+        taxon.tipo_solicitacao = 'cadastro'
+        taxon.save()
+        messages.info(request, 'Edição negada. Versão anterior mantida.')
+    return redirect('listar_solicitacoes')
 
 
 @login_required
@@ -158,9 +153,10 @@ def adicionar_especie(request):
         if form.is_valid():
             taxon_obj = form.save(commit=False)
             taxon_obj.status = False
+            taxon_obj.tipo_solicitacao = 'cadastro'
             taxon_obj.save()
             messages.info(
-                request, 'Seu cadastro será verificado por um administrador.')
+                request, 'Cadastro enviado para análise do administrador.')
             return redirect('listar_especies')
     else:
         form = TaxonForm()
@@ -223,7 +219,6 @@ class TaxonWizard(LoginRequiredMixin, SessionWizardView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
-            # Renderiza o template de acesso negado diretamente
             return render(request, 'access_denied.html', status=403)
         return super().dispatch(request, *args, **kwargs)
 
@@ -232,9 +227,10 @@ class TaxonWizard(LoginRequiredMixin, SessionWizardView):
         for form in form_list:
             data.update(form.cleaned_data)
         data['status'] = False
+        data['tipo_solicitacao'] = 'cadastro'
         Taxon.objects.create(**data)
         messages.info(
-            self.request, 'Seu cadastro será analisado por um administrador.')
+            self.request, 'Cadastro enviado para análise do administrador.')
         return HttpResponseRedirect(reverse('listar_especies'))
 
 
@@ -250,21 +246,9 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return render(
-                request,
-                "access_denied.html",
-                {"message": "Você precisa estar logado."},
-                status=401
-            )
-
+            return render(request, "access_denied.html", {"message": "Você precisa estar logado."}, status=401)
         if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
-            return render(
-                request,
-                "access_denied.html",
-                {"message": " Você não tem permissão para editar espécies."},
-                status=403
-            )
-
+            return render(request, "access_denied.html", {"message": "Você não tem permissão para editar espécies."}, status=403)
         return super().dispatch(request, *args, **kwargs)
 
     def get_wizard_kwargs(self, step):
@@ -284,12 +268,10 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
         updated = any(form.has_changed() for form in form_list)
         pk = self.kwargs.get('pk')
         taxon = get_object_or_404(Taxon, pk=pk)
-
         if updated:
             data = {}
             for form in form_list:
                 data.update(form.cleaned_data)
-
             taxon.taxonID = data.get('taxonID')
             taxon.acceptedNameUsageID = data.get('acceptedNameUsageID')
             taxon.parentNameUsageID = data.get('parentNameUsageID')
@@ -312,20 +294,14 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.bibliographicCitation = data.get('bibliographicCitation')
             taxon.references = data.get('references')
             taxon.foto = data.get('foto')
-
+            taxon.status = False
+            taxon.tipo_solicitacao = 'edicao'
             taxon.save()
-            messages.success(
-                self.request, 'Atualização realizada com sucesso.')
+            messages.info(
+                self.request, 'Edição enviada para análise do administrador.')
         else:
             messages.info(self.request, 'Nenhuma mudança detectada.')
-
-        return render(self.request, self.template_name, {
-            'done': True,
-            'taxon': taxon
-        })
-
-
-login_required
+        return HttpResponseRedirect(reverse('listar_especies'))
 
 
 def history_Taxon(request, pk):
@@ -362,3 +338,76 @@ def history_Taxon(request, pk):
         'taxon': taxon,
         'historico': historico_detalhado
     })
+
+
+@login_required
+def toggle_status(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+        return render(request, 'access_denied.html', status=403)
+
+    if taxon.tipo_solicitacao == 'exclusao':
+        taxon.delete()
+        messages.success(request, 'Espécie excluída com sucesso.')
+        return redirect('listar_solicitacoes')
+
+    taxon.status = True
+    taxon.tipo_solicitacao = None
+    taxon.save()
+    messages.success(request, 'Solicitação aprovada com sucesso.')
+
+    return redirect('listar_solicitacoes')
+
+
+
+@login_required
+def negar_edicao(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+        return render(request, 'access_denied.html', status=403)
+
+    historico = taxon.history.order_by('-history_date')
+
+    if historico.count() >= 2:
+        estado_anterior = historico[1] 
+
+        for field in taxon._meta.get_fields():
+            if field.name in ['id', 'pk', 'status']:
+                continue
+            if hasattr(estado_anterior, field.name):
+                setattr(taxon, field.name, getattr(estado_anterior, field.name))
+
+        taxon.status = True
+        taxon.save()
+
+        messages.info(request, 'Edição negada e dados revertidos ao estado anterior.')
+    else:
+        messages.warning(request, 'Não há edição anterior para reverter.')
+
+    return redirect('listar_especies')
+
+
+@login_required
+def set_especie_false(request, especie_id):
+    especie = get_object_or_404(Taxon, id=especie_id)
+    if request.method == 'POST':
+        especie.tipo_solicitacao = 'exclusao'
+        especie.status = False
+        especie.save()
+        return redirect('listar_especies')
+    return render(request, 'apagar_especie.html', {'especie': especie})
+
+
+
+@login_required
+def negar_exclusao(request, pk):
+    taxon = get_object_or_404(Taxon, pk=pk)
+    if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
+        return render(request, 'access_denied.html', status=403)
+
+    taxon.tipo_solicitacao = 'exclusao'
+    taxon.status = True
+    taxon.save()
+
+    messages.info(request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
+    return redirect('listar_especies')

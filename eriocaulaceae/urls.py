@@ -23,4 +23,7 @@ urlpatterns = [
     path('listar_solicitacoes/', views.list_solicitacoes, name='listar_solicitacoes'),
     path('taxon/<uuid:pk>/toggle_status/', views.toggle_status, name='toggle_status'),
     path('set-especie/<uuid:especie_id>/', views.set_especie_false, name='set_especie_false'),
+    path('taxon/<uuid:pk>/negar_edicao/', views.negar_edicao, name='negar_edicao'),
+    path('negar_exclusao/<uuid:pk>/', views.negar_exclusao, name='negar_exclusao'),
+
 ]

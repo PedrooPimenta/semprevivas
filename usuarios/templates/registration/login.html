@@ -11,7 +11,17 @@
 <div class="login-container-semprevivas">
     <div class="login-card-semprevivas">
         <h2 class="login-title-semprevivas">Bem-vindo de volta!</h2>
-
+           {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="especies-alert-semprevivas alert-{{ message.tags|default:'info' }}">
+                {% if message.tags == "success" %}✅{% elif message.tags == "error" %}❌{% elif message.tags == "warning" %}⚠️{% else %}ℹ️{% endif %}
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% if form.errors %}
             <div class="login-alert-semprevivas alert-danger">
                 Seu nome de usuário ou senha estão incorretos. Tente novamente.
