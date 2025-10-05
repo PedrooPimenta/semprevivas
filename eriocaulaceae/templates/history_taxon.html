@@ -48,9 +48,9 @@
                                 <ul class="historico-changes-list-semprevivas">
                                     {% for diff in item.diferencas %}
                                     <li class="historico-change-item-semprevivas">
-                                        <span class="historico-change-field-semprevivas">{{ diff.field }}:</span>
+                                        <span class="historico-change-field-semprevivas">Dado alterado: {{ diff.field }}:</span>
                                         <span class="historico-change-values-semprevivas">
-                                            "{{ diff.old }}" → "{{ diff.new }}"
+                                            " de {{ diff.old }}" para "{{ diff.new }}"
                                         </span>
                                     </li>
                                     {% endfor %}

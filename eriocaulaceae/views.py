@@ -144,13 +144,14 @@ def list_solicitacoes(request):
                 anterior = historico[1]
                 delta = ultima.diff_against(anterior)
                 for change in delta.changes:
-                    if change.field == 'status':
+                    if change.field in ['status', 'tipo_solicitacao']:
                         continue
                     diferencas.append({
                         'field': change.field,
                         'old': change.old,
                         'new': change.new
                     })
+
         solicitacoes_detalhadas.append({
             'objeto': s,
             'diferencas': diferencas
@@ -159,6 +160,8 @@ def list_solicitacoes(request):
     return render(request, 'list_solicitacoes.html', {
         'solicitacoes': solicitacoes_detalhadas
     })
+
+
 
 @login_required
 def negar_edicao(request, pk):
@@ -329,6 +332,7 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
         return HttpResponseRedirect(reverse('listar_especies'))
 
 
+@login_required
 def history_Taxon(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
     historico = taxon.history.all().order_by('history_date')
@@ -336,11 +340,14 @@ def history_Taxon(request, pk):
     anterior = None
 
     for item in historico:
+        if hasattr(item, 'status') and item.status is False:
+            continue
+
         diffs = []
         if anterior:
             delta = item.diff_against(anterior)
             for change in delta.changes:
-                if change.field == 'status':
+                if change.field in ['status', 'tipo_solicitacao']:
                     continue
                 diffs.append({
                     'field': change.field,
@@ -348,13 +355,14 @@ def history_Taxon(request, pk):
                     'new': change.new,
                 })
 
-        historico_detalhado.append({
-            'data': item.history_date,
-            'tipo': item.history_type,
-            'objeto': item,
-            'diferencas': diffs,
-            'usuario': item.history_user,
-        })
+        if diffs:
+            historico_detalhado.append({
+                'data': item.history_date,
+                'tipo': item.history_type,
+                'objeto': item,
+                'diferencas': diffs,
+                'usuario': item.history_user,
+            })
         anterior = item
 
     historico_detalhado.reverse()
@@ -363,6 +371,8 @@ def history_Taxon(request, pk):
         'taxon': taxon,
         'historico': historico_detalhado
     })
+
+
 
 
 @login_required
@@ -384,7 +394,6 @@ def toggle_status(request, pk):
     return redirect('listar_solicitacoes')
 
 
-
 @login_required
 def negar_edicao(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
@@ -394,18 +403,20 @@ def negar_edicao(request, pk):
     historico = taxon.history.order_by('-history_date')
 
     if historico.count() >= 2:
-        estado_anterior = historico[1] 
+        estado_anterior = historico[1]
 
         for field in taxon._meta.get_fields():
             if field.name in ['id', 'pk', 'status']:
                 continue
             if hasattr(estado_anterior, field.name):
-                setattr(taxon, field.name, getattr(estado_anterior, field.name))
+                setattr(taxon, field.name, getattr(
+                    estado_anterior, field.name))
 
         taxon.status = True
         taxon.save()
 
-        messages.info(request, 'Edição negada e dados revertidos ao estado anterior.')
+        messages.info(
+            request, 'Edição negada e dados revertidos ao estado anterior.')
     else:
         messages.warning(request, 'Não há edição anterior para reverter.')
 
@@ -423,7 +434,6 @@ def set_especie_false(request, especie_id):
     return render(request, 'apagar_especie.html', {'especie': especie})
 
 
-
 @login_required
 def negar_exclusao(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
@@ -434,8 +444,6 @@ def negar_exclusao(request, pk):
     taxon.status = True
     taxon.save()
 
-    messages.info(request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
+    messages.info(
+        request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
     return redirect('listar_especies')
-
-
-
