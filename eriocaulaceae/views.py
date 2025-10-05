@@ -131,9 +131,34 @@ def toggle_status(request, pk):
 def list_solicitacoes(request):
     if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
         return render(request, 'access_denied.html', status=403)
-    solicitacoes = Taxon.objects.filter(status=False)
-    return render(request, 'list_solicitacoes.html', {'solicitacoes': solicitacoes})
 
+    solicitacoes = Taxon.objects.filter(status=False).order_by('created_at')
+    solicitacoes_detalhadas = []
+
+    for s in solicitacoes:
+        diferencas = []
+        if s.tipo_solicitacao == 'edicao':
+            historico = s.history.order_by('-history_date')
+            if historico.count() >= 2:
+                ultima = historico[0]
+                anterior = historico[1]
+                delta = ultima.diff_against(anterior)
+                for change in delta.changes:
+                    if change.field == 'status':
+                        continue
+                    diferencas.append({
+                        'field': change.field,
+                        'old': change.old,
+                        'new': change.new
+                    })
+        solicitacoes_detalhadas.append({
+            'objeto': s,
+            'diferencas': diferencas
+        })
+
+    return render(request, 'list_solicitacoes.html', {
+        'solicitacoes': solicitacoes_detalhadas
+    })
 
 @login_required
 def negar_edicao(request, pk):
@@ -411,3 +436,6 @@ def negar_exclusao(request, pk):
 
     messages.info(request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
     return redirect('listar_especies')
+
+
+

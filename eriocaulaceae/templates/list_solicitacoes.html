@@ -13,7 +13,7 @@
     <div class="container">
         {% if user.is_authenticated %}
         <h1 class="solicitacoes-title-semprevivas">Solicitações</h1>
-           {% if messages %}
+        {% if messages %}
         <div class="messages">
             {% for message in messages %}
             <div class="especies-alert-semprevivas alert-{{ message.tags|default:'info' }}">
@@ -38,154 +38,148 @@
             <tbody>
                 {% for s in solicitacoes %}
                 <tr>
-                    <td class="text-center fw-bold">{{ s.id }}</td>
-                    <td class="fw-medium">{{ s.scientificName }}</td>
-                    <<td class="text-center">
-                        {% if s.tipo_solicitacao == 'cadastro' %}
+                    <td class="text-center fw-bold">{{ s.objeto.id }}</td>
+                    <td class="fw-medium">{{ s.objeto.scientificName }}</td>
+                    <td class="text-center">
+                        {% if s.objeto.tipo_solicitacao == 'cadastro' %}
                         Cadastro
-                        {% elif s.tipo_solicitacao == 'edicao' %}
+                        {% elif s.objeto.tipo_solicitacao == 'edicao' %}
                         Edição
-                        {% elif s.tipo_solicitacao == 'exclusao' %}
+                        {% elif s.objeto.tipo_solicitacao == 'exclusao' %}
                         Exclusão
                         {% endif %}
-                        </td>
+                    </td>
+                    <td class="text-center">
+                        {% if s.objeto.status %}
+                        <span class="solicitacoes-badge-ativo">
+                            <i class="fas fa-check-circle me-1"></i> Ativo
+                        </span>
+                        {% else %}
+                        <span class="solicitacoes-badge-inativo">
+                            <i class="fas fa-times-circle me-1"></i> Pendente
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+                            <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-info"
+                                data-bs-toggle="modal" data-bs-target="#modalSolicitacao{{ s.objeto.id }}">
+                                <i class="fas fa-eye me-1"></i> Visualizar
+                            </button>
 
-                        <td class="text-center">
-                            {% if s.status %}
-                            <span class="solicitacoes-badge-ativo">
-                                <i class="fas fa-check-circle me-1"></i> Ativo
-                            </span>
-                            {% else %}
-                            <span class="solicitacoes-badge-inativo">
-                                <i class="fas fa-times-circle me-1"></i> Pendente
-                            </span>
-                            {% endif %}
-                        </td>
-                        <td class="text-center">
-                            <div class="d-flex flex-wrap justify-content-center gap-2">
-                                <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-info"
-                                    data-bs-toggle="modal" data-bs-target="#modalSolicitacao{{ s.id }}">
-                                    <i class="fas fa-eye me-1"></i> Visualizar
+                            {% if not s.objeto.status %}
+                            <form method="post" action="{% url 'toggle_status' s.objeto.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-success">
+                                    <i class="fas fa-check me-1"></i> Aprovar
                                 </button>
+                            </form>
 
-                                {% if not s.status %}
-                                <form method="post" action="{% url 'toggle_status' s.pk %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-success">
-                                        <i class="fas fa-check me-1"></i> Aprovar
-                                    </button>
-                                </form>
+                            {% if s.objeto.tipo_solicitacao == 'edicao' %}
+                            <form method="post" action="{% url 'negar_edicao' s.objeto.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-danger">
+                                    <i class="fas fa-ban me-1"></i> Negar Edição
+                                </button>
+                            </form>
+                            {% elif s.objeto.tipo_solicitacao == 'cadastro' %}
+                            <a href="{% url 'apagar_especie' s.objeto.pk %}" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary">
+                                <i class="fas fa-trash-alt me-1"></i> Negar Cadastro
+                            </a>
+                            {% elif s.objeto.tipo_solicitacao == 'exclusao' %}
+                            <form method="post" action="{% url 'negar_exclusao' s.objeto.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-warning">
+                                    <i class="fas fa-times me-1"></i> Negar Exclusão
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% endif %}
 
-                                {% if s.tipo_solicitacao == 'edicao' %}
-                                <form method="post" action="{% url 'negar_edicao' s.pk %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-danger">
-                                        <i class="fas fa-ban me-1"></i> Negar Edição
-                                    </button>
-                                </form>
-                                {% elif s.tipo_solicitacao == 'cadastro' %}
-                                <a href="{% url 'apagar_especie' s.pk %}"
-                                    class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary">
-                                    <i class="fas fa-trash-alt me-1"></i> Negar Cadastro
-                                </a>
-                                {% elif s.tipo_solicitacao == 'exclusao' %}
-                                <form method="post" action="{% url 'negar_exclusao' s.pk %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="solicitacoes-btn-semprevivas solicitacoes-btn-warning">
-                                        <i class="fas fa-times me-1"></i> Negar Exclusão
-                                    </button>
-                                </form>
-                                {% endif %}
-                                {% endif %}
-
-                            </div>
-                        </td>
+                        </div>
+                    </td>
                 </tr>
 
-                <div class="modal fade solicitacoes-modal-semprevivas" id="modalSolicitacao{{ s.id }}" tabindex="-1">
+                <div class="modal fade solicitacoes-modal-semprevivas" id="modalSolicitacao{{ s.objeto.id }}" tabindex="-1">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">Detalhes da Solicitação #{{ s.id }}</h5>
-                                <button type="button" class="btn-close btn-close-white"
-                                    data-bs-dismiss="modal"></button>
+                                <h5 class="modal-title">Detalhes da Solicitação #{{ s.objeto.id }}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab"
-                                            href="#geral{{ s.id }}">Geral</a>
+                                        <a class="nav-link active" data-bs-toggle="tab" href="#geral{{ s.objeto.id }}">Geral</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#taxonomia{{ s.id }}">Taxon</a>
+                                        <a class="nav-link" data-bs-toggle="tab" href="#taxonomia{{ s.objeto.id }}">Taxon</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab"
-                                            href="#descricaoMorfologica{{ s.id }}">Descrição Morfológica</a>
+                                        <a class="nav-link" data-bs-toggle="tab" href="#descricaoMorfologica{{ s.objeto.id }}">Descrição Morfológica</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab"
-                                            href="#chaveIdentificacao{{ s.id }}">Chave Identificação</a>
+                                        <a class="nav-link" data-bs-toggle="tab" href="#chaveIdentificacao{{ s.objeto.id }}">Chave Identificação</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#foto{{ s.id }}">Fotos</a>
+                                        <a class="nav-link" data-bs-toggle="tab" href="#foto{{ s.objeto.id }}">Fotos</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab"
-                                            href="#referencias{{ s.id }}">Referências</a>
+                                        <a class="nav-link" data-bs-toggle="tab" href="#referencias{{ s.objeto.id }}">Referências</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#alteracoes{{ s.objeto.id }}">Alterações propostas</a>
                                     </li>
                                 </ul>
 
                                 <div class="tab-content mt-3">
-                                    <div class="tab-pane fade show active" id="geral{{ s.id }}">
-                                        <p><strong>Taxon ID:</strong> {{ s.taxonID }}</p>
-                                        <p><strong>Accepted Name Usage ID:</strong> {{ s.acceptedNameUsageID }}</p>
-                                        <p><strong>Parent Name Usage ID:</strong> {{ s.parentNameUsageID }}</p>
-                                        <p><strong>Scientific Name:</strong> {{ s.scientificName }}</p>
-                                        <p><strong>Accepted Name Usage:</strong> {{ s.acceptedNameUsage }}</p>
-                                        <p><strong>Name Published In:</strong> {{ s.namePublishedIn }}</p>
-                                        <p><strong>Name Published In Year:</strong> {{ s.namePublishedInYear }}</p>
+                                    <div class="tab-pane fade show active" id="geral{{ s.objeto.id }}">
+                                        <p><strong>Taxon ID:</strong> {{ s.objeto.taxonID }}</p>
+                                        <p><strong>Accepted Name Usage ID:</strong> {{ s.objeto.acceptedNameUsageID }}</p>
+                                        <p><strong>Parent Name Usage ID:</strong> {{ s.objeto.parentNameUsageID }}</p>
+                                        <p><strong>Scientific Name:</strong> {{ s.objeto.scientificName }}</p>
+                                        <p><strong>Accepted Name Usage:</strong> {{ s.objeto.acceptedNameUsage }}</p>
+                                        <p><strong>Name Published In:</strong> {{ s.objeto.namePublishedIn }}</p>
+                                        <p><strong>Name Published In Year:</strong> {{ s.objeto.namePublishedInYear }}</p>
                                     </div>
 
-                                    <div class="tab-pane fade" id="taxonomia{{ s.id }}">
-                                        <p><strong>Higher Classification:</strong> {{ s.higherClassification }}</p>
-                                        <p><strong>Kingdom:</strong> {{ s.kingdom }}</p>
-                                        <p><strong>Phylum:</strong> {{ s.phylum }}</p>
-                                        <p><strong>Classe:</strong> {{ s.classe }}</p>
-                                        <p><strong>Order:</strong> {{ s.order }}</p>
-                                        <p><strong>Family:</strong> {{ s.family }}</p>
-                                        <p><strong>Genus:</strong> {{ s.genus }}</p>
-                                        <p><strong>Specific Epithet:</strong> {{ s.specificEpithet }}</p>
-                                        <p><strong>Infra Specific Epithet:</strong> {{ s.infraspecificEpithet }}</p>
-                                        <p><strong>Taxon Rank:</strong> {{ s.taxonRank }}</p>
-                                        <p><strong>Scientific Name Authorship:</strong> {{ s.scientificNameAuthorship }}
-                                        </p>
-                                        <p><strong>Taxonomic Status:</strong> {{ s.taxonomicStatus }}</p>
+                                    <div class="tab-pane fade" id="taxonomia{{ s.objeto.id }}">
+                                        <p><strong>Higher Classification:</strong> {{ s.objeto.higherClassification }}</p>
+                                        <p><strong>Kingdom:</strong> {{ s.objeto.kingdom }}</p>
+                                        <p><strong>Phylum:</strong> {{ s.objeto.phylum }}</p>
+                                        <p><strong>Classe:</strong> {{ s.objeto.classe }}</p>
+                                        <p><strong>Order:</strong> {{ s.objeto.order }}</p>
+                                        <p><strong>Family:</strong> {{ s.objeto.family }}</p>
+                                        <p><strong>Genus:</strong> {{ s.objeto.genus }}</p>
+                                        <p><strong>Specific Epithet:</strong> {{ s.objeto.specificEpithet }}</p>
+                                        <p><strong>Infra Specific Epithet:</strong> {{ s.objeto.infraspecificEpithet }}</p>
+                                        <p><strong>Taxon Rank:</strong> {{ s.objeto.taxonRank }}</p>
+                                        <p><strong>Scientific Name Authorship:</strong> {{ s.objeto.scientificNameAuthorship }}</p>
+                                        <p><strong>Taxonomic Status:</strong> {{ s.objeto.taxonomicStatus }}</p>
                                     </div>
 
-                                    <div class="tab-pane fade" id="descricaoMorfologica{{ s.id }}">
-                                        <p><strong>Descrição Morfológica:</strong> {{ s.descricao_morfologica }}</p>
+                                    <div class="tab-pane fade" id="descricaoMorfologica{{ s.objeto.id }}">
+                                        <p><strong>Descrição Morfológica:</strong> {{ s.objeto.descricao_morfologica }}</p>
                                     </div>
 
-                                    <div class="tab-pane fade" id="chaveIdentificacao{{ s.id }}">
-                                        <p><strong>Chave Identificação:</strong> {{ s.chave_identificacao }}</p>
+                                    <div class="tab-pane fade" id="chaveIdentificacao{{ s.objeto.id }}">
+                                        <p><strong>Chave Identificação:</strong> {{ s.objeto.chave_identificacao }}</p>
                                     </div>
 
-                                    <div class="tab-pane fade" id="foto{{ s.id }}">
-                                        {% if s.foto %}
-                                        <img src="{{ s.foto.url }}" alt="Foto da espécie"
-                                            class="solicitacoes-img-semprevivas">
+                                    <div class="tab-pane fade" id="foto{{ s.objeto.id }}">
+                                        {% if s.objeto.foto %}
+                                        <img src="{{ s.objeto.foto.url }}" alt="Foto da espécie" class="solicitacoes-img-semprevivas">
                                         {% else %}
                                         <p class="text-muted">Nenhuma foto disponível.</p>
                                         {% endif %}
                                     </div>
 
-                                    <div class="tab-pane fade" id="referencias{{ s.id }}">
-                                        <p><strong>Comentários:</strong> {{ s.comentarios }}</p>
+                                    <div class="tab-pane fade" id="referencias{{ s.objeto.id }}">
+                                        <p><strong>Comentários:</strong> {{ s.objeto.comentarios }}</p>
                                         <p><strong>Estados:</strong>
-                                            {% if s.estado %}
+                                            {% if s.objeto.estado %}
                                         <ul>
-                                            {% for e in s.estado %}
+                                            {% for e in s.objeto.estado %}
                                             <li>{{ e }}</li>
                                             {% endfor %}
                                         </ul>
@@ -193,19 +187,32 @@
                                         Nenhum estado informado.
                                         {% endif %}
                                         </p>
-                                        <p><strong>Status Nomenclatural:</strong> {{ s.nomenclaturalStatus }}</p>
-                                        <p><strong>Citação Bibliográfica:</strong> {{ s.bibliographicCitation }}</p>
-                                        <p><strong>Referências:</strong> {{ s.references }}</p>
+                                        <p><strong>Status Nomenclatural:</strong> {{ s.objeto.nomenclaturalStatus }}</p>
+                                        <p><strong>Citação Bibliográfica:</strong> {{ s.objeto.bibliographicCitation }}</p>
+                                        <p><strong>Referências:</strong> {{ s.objeto.references }}</p>
                                     </div>
+
+                                    <div class="tab-pane fade" id="alteracoes{{ s.objeto.id }}">
+                                        {% if s.diferencas %}
+                                        <ul>
+                                            {% for d in s.diferencas %}
+                                              <li>{{ d.field }}: de "{{ d.old }}" para "{{ d.new }}"</li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% else %}
+                                        <p>Nenhuma alteração pendente.</p>
+                                        {% endif %}
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary"
-                                    data-bs-dismiss="modal">Fechar</button>
+                                <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary" data-bs-dismiss="modal">Fechar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 {% endfor %}
             </tbody>
         </table>
@@ -216,4 +223,5 @@
         {% endif %}
     </div>
 </div>
+
 {% endblock %}
