@@ -9,8 +9,9 @@
       </div>
     </a>
 
-    <button class="navbar-toggler nav-toggler-semprevivas" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavSemprevivas"
-      aria-controls="navbarNavSemprevivas" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler nav-toggler-semprevivas" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarNavSemprevivas" aria-controls="navbarNavSemprevivas" aria-expanded="false"
+      aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -25,18 +26,18 @@
         </li>
 
         {% for group in request.user.groups.all %}
-          {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
-          <li class="nav-item nav-item-semprevivas">
-            <a href="{% url 'dashboard' %}" class="nav-link nav-link-semprevivas">
-              <i class="bi bi-speedometer2 nav-icon-semprevivas"></i> Dashboard
-            </a>
-          </li>
-          {% endif %}
+        {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
+        <li class="nav-item nav-item-semprevivas">
+          <a href="{% url 'dashboard' %}" class="nav-link nav-link-semprevivas">
+            <i class="bi bi-speedometer2 nav-icon-semprevivas"></i> Dashboard
+          </a>
+        </li>
+        {% endif %}
         {% endfor %}
 
         <li class="nav-item dropdown nav-item-semprevivas">
-          <a class="nav-link dropdown-toggle nav-link-semprevivas" href="#" id="especiesDropdownSemprevivas" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle nav-link-semprevivas" href="#" id="especiesDropdownSemprevivas"
+            role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-flower1 nav-icon-semprevivas"></i> Eriocaulaceae
           </a>
           <ul class="dropdown-menu dropdown-menu-semprevivas" aria-labelledby="especiesDropdownSemprevivas">
@@ -49,13 +50,13 @@
         </li>
 
         {% for group in request.user.groups.all %}
-          {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
-          <li class="nav-item nav-item-semprevivas">
-            <a class="nav-link nav-link-semprevivas" href="{% url 'adicionar_taxon' %}">
-              <i class="bi bi-plus-circle nav-icon-semprevivas"></i> Adicionar
-            </a>
-          </li>
-          {% endif %}
+        {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
+        <li class="nav-item nav-item-semprevivas">
+          <a class="nav-link nav-link-semprevivas" href="{% url 'adicionar_taxon' %}">
+            <i class="bi bi-plus-circle nav-icon-semprevivas"></i> Adicionar
+          </a>
+        </li>
+        {% endif %}
         {% endfor %}
 
       </ul>
@@ -64,20 +65,28 @@
       <div class="d-flex align-items-center ms-auto">
         {% if user.is_authenticated %}
         <div class="dropdown dropdown-semprevivas">
-          <button class="btn btn-link dropdown-toggle nav-user-semprevivas" type="button"
-            id="userDropdownSemprevivas" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-link dropdown-toggle nav-user-semprevivas" type="button" id="userDropdownSemprevivas"
+            data-bs-toggle="dropdown" aria-expanded="false">
             <div class="nav-user-avatar-semprevivas">
               {{ user.username|first|upper }}
             </div>
             <span class="d-none d-lg-inline">Olá, {{ user.username }}!</span>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-semprevivas" aria-labelledby="userDropdownSemprevivas">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-semprevivas"
+            aria-labelledby="userDropdownSemprevivas">
             <li>
               <a class="dropdown-item dropdown-item-semprevivas" href="{% url 'altera_senha' %}">
                 <i class="bi bi-key nav-icon-semprevivas me-2"></i> Alterar Senha
               </a>
             </li>
-            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item dropdown-item-semprevivas" href="{% url 'minhas_solicitacoes' %}">
+                <i class="bi bi-list nav-icon-semprevivas me-2"></i> Minhas Solicitações
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
             <li>
               <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}

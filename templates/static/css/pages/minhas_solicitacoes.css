@@ -1,0 +1,113 @@
+.minhas-solicitacoes-container-semprevivas {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem 0;
+}
+
+.minhas-solicitacoes-card-semprevivas {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(6px);
+    border-radius: 16px;
+    border: 1px solid rgba(169, 209, 142, 0.18);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.minhas-solicitacoes-title-semprevivas {
+    color: #2E8B57;
+    font-weight: 700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.minhas-solicitacoes-subtitle-semprevivas {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
+}
+
+.minhas-solicitacoes-table-semprevivas {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.minhas-solicitacoes-table-semprevivas thead {
+    background: #2E8B57;
+    color: white;
+}
+
+.minhas-solicitacoes-table-semprevivas th,
+.minhas-solicitacoes-table-semprevivas td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(169, 209, 142, 0.12);
+}
+
+.minhas-solicitacoes-table-semprevivas tbody tr:hover {
+    background: rgba(169, 209, 142, 0.06);
+}
+
+.badge-status-aprovado {
+    background: #28a745;
+    color: #fff;
+    padding: 0.35rem 0.65rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-status-negado {
+    background: #dc3545;
+    color: #fff;
+    padding: 0.35rem 0.65rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge-status-pendente {
+    background: #ffc107;
+    color: #212529;
+    padding: 0.35rem 0.65rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.minhas-solicitacoes-actions {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.minhas-solicitacoes-link-semprevivas {
+    color: #2E8B57;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.minhas-solicitacoes-link-semprevivas:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .minhas-solicitacoes-card-semprevivas {
+        padding: 1rem;
+    }
+
+    .minhas-solicitacoes-title-semprevivas {
+        font-size: 1.6rem;
+    }
+
+    .minhas-solicitacoes-table-semprevivas th,
+    .minhas-solicitacoes-table-semprevivas td {
+        padding: 0.6rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}
