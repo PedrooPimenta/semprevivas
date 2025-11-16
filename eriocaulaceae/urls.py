@@ -8,6 +8,8 @@ urlpatterns = [
          name='eriocaulaceae_adicionar'),
     path('upload/', views.upload_csv, name='upload_csv'),
     path('listar/', views.listar_especies, name='listar_especies'),
+    path('minhas-especies/', views.minhas_especies_cadastradas,
+         name='minhas_especies'),
     path('buscar_especies/', views.buscar_especies, name='buscar_especies'),
     path('editar-especie/<uuid:especie_id>/',
          views.editar_especie, name='editar_especie'),

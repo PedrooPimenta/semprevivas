@@ -13,6 +13,7 @@ from formtools.wizard.views import SessionWizardView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 import pandas as pd
+import ast
 from .forms import (
     TaxonForm, CSVUploadForm,
     TaxonStep1Form, TaxonStep2Form, TaxonStep3Form, TaxonStep4Form,
@@ -66,9 +67,17 @@ def listar_especies(request):
     }
     for taxon in page_obj:
         if taxon.estado:
-            nomes_completos = [estados.get(sigla)
-                               for sigla in eval(taxon.estado)]
-            taxon.estado = nomes_completos
+            try:
+                valores = taxon.estado
+                if isinstance(valores, str):
+                    siglas = ast.literal_eval(valores)
+                else:
+                    siglas = valores
+                nomes_completos = [estados.get(sigla, sigla)
+                                   for sigla in siglas]
+                taxon.estado = nomes_completos
+            except Exception:
+                taxon.estado = None
         else:
             taxon.estado = None
     context = {
@@ -77,6 +86,48 @@ def listar_especies(request):
         'solicitacoes_pendentes': solicitacoes_pendentes
     }
     return render(request, 'listar_especies.html', context)
+
+
+@login_required
+def minhas_especies_cadastradas(request):
+    """Lista as espécies que o usuário criou (entradas de criação no histórico)."""
+    usuario = request.user
+    HistModel = Taxon.history.model
+    created_qs = HistModel.objects.filter(
+        history_user=usuario, history_type='+').values_list('id', flat=True).distinct()
+    taxa_qs = Taxon.objects.filter(
+        id__in=list(created_qs)).order_by('-created_at')
+    paginator = Paginator(taxa_qs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    estados = {
+        'AL': 'Alagoas', 'AP': 'Amapá', 'AM': 'Amazonas', 'BA': 'Bahia',
+        'CE': 'Ceará', 'DF': 'Distrito Federal', 'ES': 'Espírito Santo',
+        'GO': 'Goiás', 'MA': 'Maranhão', 'MT': 'Mato Grosso', 'MS': 'Mato Grosso do Sul',
+        'MG': 'Minas Gerais', 'PA': 'Pará', 'PB': 'Paraíba', 'PR': 'Paraná',
+        'PE': 'Pernambuco', 'PI': 'Piauí', 'RJ': 'Rio de Janeiro', 'RN': 'Rio Grande do Norte',
+        'RS': 'Rio Grande do Sul', 'RO': 'Rondônia', 'RR': 'Roraima', 'SC': 'Santa Catarina',
+        'SP': 'São Paulo', 'SE': 'Sergipe', 'TO': 'Tocantins'
+    }
+
+    for taxon in page_obj:
+        if taxon.estado:
+            try:
+                valores = taxon.estado
+                if isinstance(valores, str):
+                    siglas = ast.literal_eval(valores)
+                else:
+                    siglas = valores
+                nomes_completos = [estados.get(sigla, sigla)
+                                   for sigla in siglas]
+                taxon.estado = nomes_completos
+            except Exception:
+                taxon.estado = None
+        else:
+            taxon.estado = None
+
+    return render(request, 'minhas_especies.html', {'page_obj': page_obj})
 
 
 @login_required
