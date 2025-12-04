@@ -16,7 +16,6 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNavSemprevivas">
-      {% if user.is_authenticated %}
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
         <li class="nav-item nav-item-semprevivas">
@@ -24,16 +23,6 @@
             <i class="bi bi-house-fill nav-icon-semprevivas"></i> Home
           </a>
         </li>
-
-        {% for group in request.user.groups.all %}
-        {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
-        <li class="nav-item nav-item-semprevivas">
-          <a href="{% url 'dashboard' %}" class="nav-link nav-link-semprevivas">
-            <i class="bi bi-speedometer2 nav-icon-semprevivas"></i> Dashboard
-          </a>
-        </li>
-        {% endif %}
-        {% endfor %}
 
         <li class="nav-item dropdown nav-item-semprevivas">
           <a class="nav-link dropdown-toggle nav-link-semprevivas" href="#" id="especiesDropdownSemprevivas"
@@ -49,6 +38,17 @@
           </ul>
         </li>
 
+        {% if user.is_authenticated %}
+        {% for group in request.user.groups.all %}
+        {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
+        <li class="nav-item nav-item-semprevivas">
+          <a href="{% url 'dashboard' %}" class="nav-link nav-link-semprevivas">
+            <i class="bi bi-speedometer2 nav-icon-semprevivas"></i> Dashboard
+          </a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
         {% for group in request.user.groups.all %}
         {% if group.name == 'Adm' or group.name == 'Pesquisadores' %}
         <li class="nav-item nav-item-semprevivas">
@@ -58,9 +58,9 @@
         </li>
         {% endif %}
         {% endfor %}
+        {% endif %}
 
       </ul>
-      {% endif %}
 
       <div class="d-flex align-items-center ms-auto">
         {% if user.is_authenticated %}
@@ -79,6 +79,8 @@
                 <i class="bi bi-key nav-icon-semprevivas me-2"></i> Alterar Senha
               </a>
             </li>
+            {% for group in request.user.groups.all %}
+            {% if group.name != 'Convidado' %}
             <li>
               <a class="dropdown-item dropdown-item-semprevivas" href="{% url 'minhas_especies' %}">
                 <i class="bi bi-folder2-open nav-icon-semprevivas me-2"></i> Minhas Espécies
@@ -89,6 +91,8 @@
                 <i class="bi bi-list nav-icon-semprevivas me-2"></i> Minhas Solicitações
               </a>
             </li>
+            {% endif %}
+            {% endfor %}
             <li>
               <hr class="dropdown-divider">
             </li>

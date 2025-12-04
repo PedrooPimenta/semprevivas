@@ -38,7 +38,7 @@ def eriocaulaceae_adicionar(request):
     return render(request, 'eriocaulaceae_adicionar.html', {'form': form})
 
 
-@login_required
+
 def listar_especies(request):
     termo_busca = request.GET.get('q', '')
     queryset = Taxon.objects.filter(status=True).order_by('created_at')
@@ -90,6 +90,9 @@ def listar_especies(request):
 
 @login_required
 def minhas_especies_cadastradas(request):
+    # não permitir acesso para usuários no grupo 'Convidado'
+    if request.user.groups.filter(name='Convidado').exists():
+        return render(request, 'access_denied.html', status=403)
     """Lista as espécies que o usuário criou (entradas de criação no histórico)."""
     usuario = request.user
     HistModel = Taxon.history.model
@@ -173,8 +176,19 @@ def apagar_especie(request, especie_id):
 @login_required
 def toggle_status(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
-    taxon.status = not taxon.status
-    taxon.save()
+    # Se for uma solicitação de exclusão e o admin aprovar (status passa de False -> aprovar),
+    # devemos remover o objeto (aprovação da exclusão). Caso contrário apenas alternar o status.
+    if taxon.tipo_solicitacao == 'exclusao' and taxon.status is False:
+        # aprovar exclusão: deletar
+        taxon.delete()
+        messages.info(request, 'Exclusão aprovada. Espécie removida.')
+    else:
+        taxon.status = not taxon.status
+        # se estamos aprovando (status True) removemos o tipo_solicitacao
+        if taxon.status:
+            taxon.tipo_solicitacao = None
+        taxon.save()
+        messages.info(request, 'Status atualizado.')
     return redirect('listar_solicitacoes')
 
 
@@ -188,8 +202,14 @@ def list_solicitacoes(request):
 
     for s in solicitacoes:
         diferencas = []
+        usuario_solicitacao = None
+
+        # busca histórico do objeto (mais recente primeiro) e tenta localizar o usuário
+        historico_desc = s.history.order_by('-history_date')
+
+        # Para edições, coletar as diferenças entre último e anterior
         if s.tipo_solicitacao == 'edicao':
-            historico = s.history.order_by('-history_date')
+            historico = historico_desc
             if historico.count() >= 2:
                 ultima = historico[0]
                 anterior = historico[1]
@@ -203,9 +223,27 @@ def list_solicitacoes(request):
                         'new': change.new
                     })
 
+        # tenta encontrar no histórico um entry cujo campo tipo_solicitacao corresponda
+        # ao tipo atual e que tenha history_user informado
+        historico_all = s.history.order_by('-history_date')
+        for h in historico_all:
+            if getattr(h, 'history_user', None) is None:
+                continue
+            if getattr(h, 'tipo_solicitacao', None) == s.tipo_solicitacao:
+                usuario_solicitacao = getattr(h, 'history_user')
+                break
+
+        # se não encontrou correspondência por tipo, pega primeiro history_user não nulo
+        if usuario_solicitacao is None:
+            for h in historico_all:
+                if getattr(h, 'history_user', None):
+                    usuario_solicitacao = getattr(h, 'history_user')
+                    break
+
         solicitacoes_detalhadas.append({
             'objeto': s,
-            'diferencas': diferencas
+            'diferencas': diferencas,
+            'usuario': usuario_solicitacao
         })
 
     return render(request, 'list_solicitacoes.html', {
@@ -215,104 +253,115 @@ def list_solicitacoes(request):
 
 @login_required
 def minhas_solicitacoes(request):
+    if request.user.groups.filter(name='Convidado').exists():
+        return render(request, 'access_denied.html', status=403)
     """Mostra para o pesquisador as solicitações que ele fez e o status de cada uma.
 
     Critérios usados:
-    - Percorre todos os objetos Taxon que possuem histórico e filtra entradas do history pelo `history_user` igual ao usuário atual.
+    - Filtra apenas o histórico do usuário atual no banco de dados (otimizado).
     - Para cada histórico cria um registro com: taxon, tipo_solicitacao (cadastro/edicao/exclusao), data, e status atual do objeto (Aprovado/Negado/Pendente).
     """
     usuario = request.user
     resultados = []
+    
+    HistModel = Taxon.history.model
+    user_history = HistModel.objects.filter(history_user=usuario).order_by('id', 'history_date')
+    
+    from django.db.models import Q
+    taxon_ids = user_history.values_list('id', flat=True).distinct()
+    taxons = {t.id: t for t in Taxon.objects.filter(id__in=taxon_ids)}
+    
+    history_cache = {}
+    for taxon_id in taxon_ids:
+        history_cache[taxon_id] = list(
+            HistModel.objects.filter(id=taxon_id).order_by('history_date')
+        )
+    
+    from types import SimpleNamespace
 
-    # Percorre todos os taxons e analisa o histórico para eventos feitos pelo usuário
-    for taxon in Taxon.objects.all():
-        # do mais antigo para o mais novo
-        history = list(taxon.history.all().order_by('history_date'))
-        for idx, hist in enumerate(history):
-            if getattr(hist, 'history_user', None) != usuario:
-                continue
+    for hist_entry in user_history:
+        taxon_id = hist_entry.id
+        taxon = taxons.get(taxon_id)
+        history = history_cache.get(taxon_id, [])
 
-            event = hist
-            prev = history[idx - 1] if idx > 0 else None
-            # encontra o próximo evento de um usuário diferente (provavelmente administrador)
-            admin_event = None
-            for j in range(idx + 1, len(history)):
-                if getattr(history[j], 'history_user', None) != usuario:
-                    admin_event = history[j]
-                    break
+        if taxon is None:
+            taxon = SimpleNamespace(
+                scientificName=getattr(hist_entry, 'scientificName', '-') ,
+                pk=taxon_id,
+                status=getattr(hist_entry, 'status', None),
+                tipo_solicitacao=getattr(hist_entry, 'tipo_solicitacao', None),
+                _deleted=True
+            )
+        
+        event_idx = None
+        for idx, h in enumerate(history):
+            if h.history_id == hist_entry.history_id:
+                event_idx = idx
+                break
+        
+        if event_idx is None:
+            continue
+        
+        event = history[event_idx]
+        prev = history[event_idx - 1] if event_idx > 0 else None
+        
+        admin_event = None
+        for j in range(event_idx + 1, len(history)):
+            if getattr(history[j], 'history_user', None) != usuario:
+                admin_event = history[j]
+                break
+        
+        tipo = getattr(event, 'tipo_solicitacao', None) or getattr(taxon, 'tipo_solicitacao', None)
 
-            tipo = getattr(event, 'tipo_solicitacao', None) or getattr(
-                taxon, 'tipo_solicitacao', None)
-
-            def history_equals(h1, h2):
-                if h1 is None or h2 is None:
-                    return False
-                # compara campos concretos relevantes, ignorando campos de controle
-                ignore = {'id', 'pk', 'created_at',
-                          'modified', 'status', 'tipo_solicitacao'}
-                for field in taxon._meta.concrete_fields:
-                    name = field.name
-                    if name in ignore:
-                        continue
-                    if getattr(h1, name, None) != getattr(h2, name, None):
-                        return False
-                return True
-
-            # decisão baseada no próximo evento do administrador, se existir
+        status_text = 'Pendente'
+        if tipo == 'exclusao':
             if admin_event:
-                # se o admin deletou o objeto (history_type == '-') e a solicitação era exclusão -> aprovado
                 if getattr(admin_event, 'history_type', None) == '-':
-                    status_text = 'Aprovado' if tipo == 'exclusao' else 'Aprovado'
+                    status_text = 'Aprovado'
                 else:
-                    # se o admin_event levou o objeto ao estado pedido pelo usuário -> aprovado
-                    if history_equals(admin_event, event):
-                        status_text = 'Aprovado'
-                    # se o admin_event levou o objeto ao estado anterior ao pedido -> negado
-                    elif prev and history_equals(admin_event, prev):
+                    if getattr(admin_event, 'status', None) is True:
                         status_text = 'Negado'
+                    elif getattr(admin_event, 'status', None) is False:
+                        status_text = 'Aprovado'
                     else:
-                        # caso o admin tenha aplicado mudanças diferentes, usar estado atual como fallback
-                        current = Taxon.objects.filter(pk=taxon.pk).first()
-                        if current and history_equals(event, current):
-                            status_text = 'Aprovado'
-                        elif current and prev and history_equals(prev, current):
-                            status_text = 'Negado'
-                        elif current and current.status is False and current.tipo_solicitacao:
-                            status_text = 'Pendente'
-                        else:
-                            status_text = 'Negado'
+                        status_text = 'Negado'
             else:
-                # sem intervenção administrativa posterior: decide por estado atual
-                current = Taxon.objects.filter(pk=taxon.pk).first()
-                if tipo == 'exclusao':
-                    if current is None:
-                        status_text = 'Aprovado'
-                    elif current and current.status is False and current.tipo_solicitacao:
-                        status_text = 'Pendente'
-                    else:
-                        status_text = 'Negado'
+                if getattr(taxon, '_deleted', False):
+                    status_text = 'Aprovado'
+                elif getattr(taxon, 'status', None) is False and getattr(taxon, 'tipo_solicitacao', None):
+                    status_text = 'Pendente'
                 else:
-                    if current and history_equals(event, current):
+                    status_text = 'Negado'
+        else:
+            if admin_event:
+                if getattr(admin_event, 'history_type', None) == '-':
+                    status_text = 'Negado'
+                else:
+                    admin_status = getattr(admin_event, 'status', None)
+                    if admin_status is True:
                         status_text = 'Aprovado'
-                    elif prev and current and history_equals(prev, current):
+                    elif admin_status is False:
                         status_text = 'Negado'
-                    elif current and current.status is False and current.tipo_solicitacao:
-                        status_text = 'Pendente'
                     else:
-                        status_text = 'Negado'
+                        status_text = 'Aprovado'
+            else:
+                if getattr(taxon, 'status', None) is True and not getattr(taxon, 'tipo_solicitacao', None):
+                    status_text = 'Aprovado'
+                elif getattr(taxon, 'status', None) is False and getattr(taxon, 'tipo_solicitacao', None):
+                    status_text = 'Pendente'
+                else:
+                    status_text = 'Negado'
+        
+        resultados.append({
+            'taxon': taxon,
+            'evento': event,
+            'tipo_solicitacao': tipo,
+            'data': event.history_date,
+            'status_text': status_text,
+            'link_historico': reverse('historico_taxon', args=[taxon.pk])
+        })
 
-            resultados.append({
-                'taxon': taxon,
-                'evento': event,
-                'tipo_solicitacao': tipo,
-                'data': event.history_date,
-                'status_text': status_text,
-                'link_historico': reverse('historico_taxon', args=[taxon.pk])
-            })
-
-    # ordenar por data descendente
-    resultados.sort(key=lambda x: x['data']
-                    or datetime.datetime.min, reverse=True)
+    resultados.sort(key=lambda x: x['data'] or datetime.datetime.min, reverse=True)
 
     return render(request, 'minhas_solicitacoes.html', {
         'resultados': resultados
@@ -593,11 +642,9 @@ def negar_exclusao(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
     if not request.user.groups.filter(name__in=['Adm', 'Pesquisadores']).exists():
         return render(request, 'access_denied.html', status=403)
-
-    taxon.tipo_solicitacao = 'exclusao'
+    taxon.tipo_solicitacao = None
     taxon.status = True
     taxon.save()
 
-    messages.info(
-        request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
-    return redirect('listar_especies')
+    messages.info(request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
+    return redirect('listar_solicitacoes')

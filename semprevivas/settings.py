@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'semprevivas'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'), # alterar de localhost para db
+        'HOST': os.environ.get('DB_HOST', 'db'), # alterar de localhost para db
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }

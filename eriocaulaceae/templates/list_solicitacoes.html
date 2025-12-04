@@ -17,7 +17,7 @@
         <div class="messages">
             {% for message in messages %}
             <div class="especies-alert-semprevivas alert-{{ message.tags|default:'info' }}">
-                {% if message.tags == "success" %}✅{% elif message.tags == "error" %}❌{% elif message.tags == "warning" %}⚠️{% else %}ℹ️{% endif %}
+                {% if message.tags == "success" %}✅{% elif message.tags == "error" %}❌{% elif message.tags == "warning"%}⚠️{% else %}ℹ️{% endif %}
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
@@ -30,6 +30,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nome Científico</th>
+                    <th class="text-center">Usuário</th>
                     <th class="text-center">Tipo</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Ações</th>
@@ -40,6 +41,7 @@
                 <tr>
                     <td class="text-center fw-bold">{{ s.objeto.id }}</td>
                     <td class="fw-medium">{{ s.objeto.scientificName }}</td>
+                    <td class="text-center">{% if s.usuario %}{{ s.usuario.get_full_name|default:s.usuario.username }}{%else %}N/A{% endif %}</td>
                     <td class="text-center">
                         {% if s.objeto.tipo_solicitacao == 'cadastro' %}
                         Cadastro
@@ -62,10 +64,17 @@
                     </td>
                     <td class="text-center">
                         <div class="d-flex flex-wrap justify-content-center gap-2">
+                            {% if s.objeto.tipo_solicitacao == 'exclusao' %}
+                            <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-info" disabled
+                                title="Exclusão — histórico não disponível">
+                                <i class="fas fa-eye me-1"></i> Visualizar
+                            </button>
+                            {% else %}
                             <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-info"
                                 data-bs-toggle="modal" data-bs-target="#modalSolicitacao{{ s.objeto.id }}">
                                 <i class="fas fa-eye me-1"></i> Visualizar
                             </button>
+                            {% endif %}
 
                             {% if not s.objeto.status %}
                             <form method="post" action="{% url 'toggle_status' s.objeto.pk %}" class="d-inline">
@@ -83,7 +92,8 @@
                                 </button>
                             </form>
                             {% elif s.objeto.tipo_solicitacao == 'cadastro' %}
-                            <a href="{% url 'apagar_especie' s.objeto.pk %}" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary">
+                            <a href="{% url 'apagar_especie' s.objeto.pk %}"
+                                class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary">
                                 <i class="fas fa-trash-alt me-1"></i> Negar Cadastro
                             </a>
                             {% elif s.objeto.tipo_solicitacao == 'exclusao' %}
@@ -100,51 +110,63 @@
                     </td>
                 </tr>
 
-                <div class="modal fade solicitacoes-modal-semprevivas" id="modalSolicitacao{{ s.objeto.id }}" tabindex="-1">
+                {% if s.objeto.tipo_solicitacao != 'exclusao' %}
+                <div class="modal fade solicitacoes-modal-semprevivas" id="modalSolicitacao{{ s.objeto.id }}"
+                    tabindex="-1">
                     <div class="modal-dialog modal-lg modal-dialog-scrollable">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Detalhes da Solicitação #{{ s.objeto.id }}</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active" data-bs-toggle="tab" href="#geral{{ s.objeto.id }}">Geral</a>
+                                        <a class="nav-link active" data-bs-toggle="tab"
+                                            href="#geral{{ s.objeto.id }}">Geral</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#taxonomia{{ s.objeto.id }}">Taxon</a>
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                            href="#taxonomia{{ s.objeto.id }}">Taxon</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#descricaoMorfologica{{ s.objeto.id }}">Descrição Morfológica</a>
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                            href="#descricaoMorfologica{{ s.objeto.id }}">Descrição Morfológica</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#chaveIdentificacao{{ s.objeto.id }}">Chave Identificação</a>
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                            href="#chaveIdentificacao{{ s.objeto.id }}">Chave Identificação</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" data-bs-toggle="tab" href="#foto{{ s.objeto.id }}">Fotos</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#referencias{{ s.objeto.id }}">Referências</a>
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                            href="#referencias{{ s.objeto.id }}">Referências</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" data-bs-toggle="tab" href="#alteracoes{{ s.objeto.id }}">Alterações propostas</a>
+                                        <a class="nav-link" data-bs-toggle="tab"
+                                            href="#alteracoes{{ s.objeto.id }}">Alterações propostas</a>
                                     </li>
                                 </ul>
 
                                 <div class="tab-content mt-3">
                                     <div class="tab-pane fade show active" id="geral{{ s.objeto.id }}">
                                         <p><strong>Taxon ID:</strong> {{ s.objeto.taxonID }}</p>
-                                        <p><strong>Accepted Name Usage ID:</strong> {{ s.objeto.acceptedNameUsageID }}</p>
+                                        <p><strong>Accepted Name Usage ID:</strong> {{ s.objeto.acceptedNameUsageID }}
+                                        </p>
                                         <p><strong>Parent Name Usage ID:</strong> {{ s.objeto.parentNameUsageID }}</p>
                                         <p><strong>Scientific Name:</strong> {{ s.objeto.scientificName }}</p>
                                         <p><strong>Accepted Name Usage:</strong> {{ s.objeto.acceptedNameUsage }}</p>
                                         <p><strong>Name Published In:</strong> {{ s.objeto.namePublishedIn }}</p>
-                                        <p><strong>Name Published In Year:</strong> {{ s.objeto.namePublishedInYear }}</p>
+                                        <p><strong>Name Published In Year:</strong> {{ s.objeto.namePublishedInYear }}
+                                        </p>
                                     </div>
 
                                     <div class="tab-pane fade" id="taxonomia{{ s.objeto.id }}">
-                                        <p><strong>Higher Classification:</strong> {{ s.objeto.higherClassification }}</p>
+                                        <p><strong>Higher Classification:</strong> {{ s.objeto.higherClassification }}
+                                        </p>
                                         <p><strong>Kingdom:</strong> {{ s.objeto.kingdom }}</p>
                                         <p><strong>Phylum:</strong> {{ s.objeto.phylum }}</p>
                                         <p><strong>Classe:</strong> {{ s.objeto.classe }}</p>
@@ -152,14 +174,17 @@
                                         <p><strong>Family:</strong> {{ s.objeto.family }}</p>
                                         <p><strong>Genus:</strong> {{ s.objeto.genus }}</p>
                                         <p><strong>Specific Epithet:</strong> {{ s.objeto.specificEpithet }}</p>
-                                        <p><strong>Infra Specific Epithet:</strong> {{ s.objeto.infraspecificEpithet }}</p>
+                                        <p><strong>Infra Specific Epithet:</strong> {{ s.objeto.infraspecificEpithet }}
+                                        </p>
                                         <p><strong>Taxon Rank:</strong> {{ s.objeto.taxonRank }}</p>
-                                        <p><strong>Scientific Name Authorship:</strong> {{ s.objeto.scientificNameAuthorship }}</p>
+                                        <p><strong>Scientific Name Authorship:</strong> {{
+                                            s.objeto.scientificNameAuthorship }}</p>
                                         <p><strong>Taxonomic Status:</strong> {{ s.objeto.taxonomicStatus }}</p>
                                     </div>
 
                                     <div class="tab-pane fade" id="descricaoMorfologica{{ s.objeto.id }}">
-                                        <p><strong>Descrição Morfológica:</strong> {{ s.objeto.descricao_morfologica }}</p>
+                                        <p><strong>Descrição Morfológica:</strong> {{ s.objeto.descricao_morfologica }}
+                                        </p>
                                     </div>
 
                                     <div class="tab-pane fade" id="chaveIdentificacao{{ s.objeto.id }}">
@@ -168,7 +193,8 @@
 
                                     <div class="tab-pane fade" id="foto{{ s.objeto.id }}">
                                         {% if s.objeto.foto %}
-                                        <img src="{{ s.objeto.foto.url }}" alt="Foto da espécie" class="solicitacoes-img-semprevivas">
+                                        <img src="{{ s.objeto.foto.url }}" alt="Foto da espécie"
+                                            class="solicitacoes-img-semprevivas">
                                         {% else %}
                                         <p class="text-muted">Nenhuma foto disponível.</p>
                                         {% endif %}
@@ -188,7 +214,8 @@
                                         {% endif %}
                                         </p>
                                         <p><strong>Status Nomenclatural:</strong> {{ s.objeto.nomenclaturalStatus }}</p>
-                                        <p><strong>Citação Bibliográfica:</strong> {{ s.objeto.bibliographicCitation }}</p>
+                                        <p><strong>Citação Bibliográfica:</strong> {{ s.objeto.bibliographicCitation }}
+                                        </p>
                                         <p><strong>Referências:</strong> {{ s.objeto.references }}</p>
                                     </div>
 
@@ -196,7 +223,7 @@
                                         {% if s.diferencas %}
                                         <ul>
                                             {% for d in s.diferencas %}
-                                              <li>{{ d.field }}: de "{{ d.old }}" para "{{ d.new }}"</li>
+                                            <li>{{ d.field }}: de "{{ d.old }}" para "{{ d.new }}"</li>
                                             {% endfor %}
                                         </ul>
                                         {% else %}
@@ -207,11 +234,13 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <button type="button" class="solicitacoes-btn-semprevivas solicitacoes-btn-secondary"
+                                    data-bs-dismiss="modal">Fechar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
                 {% endfor %}
             </tbody>

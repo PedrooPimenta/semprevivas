@@ -14,8 +14,8 @@
                     <tr>
                         <th>Espécie</th>
                         <th>Data</th>
+                        <th>Tipo</th>
                         <th>Status</th>
-                        <th>Detalhes</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -23,6 +23,9 @@
                     <tr>
                         <td>{{ r.taxon.scientificName|default:'-' }}</td>
                         <td>{{ r.data|date:"j \de F \de Y \à\s H:i" }}</td>
+                        <td>
+                            {% if r.tipo_solicitacao == 'cadastro' %}Cadastro{% elif r.tipo_solicitacao == 'edicao'%}Edição{% elif r.tipo_solicitacao == 'exclusao' %}Exclusão{% else %}-{% endif %}
+                        </td>
                         <td>
                             {% if r.status_text == 'Aprovado' %}
                             <span class="badge-status-aprovado">Aprovado</span>
@@ -32,8 +35,6 @@
                             <span class="badge-status-pendente">Pendente</span>
                             {% endif %}
                         </td>
-                        <td><a class="minhas-solicitacoes-link-semprevivas" href="{{ r.link_historico }}">Ver
-                                histórico</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

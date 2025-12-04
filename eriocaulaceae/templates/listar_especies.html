@@ -36,7 +36,6 @@
         </div>
         {% endif %}
 
-        <!-- Tabela -->
         {% if page_obj %}
         <div class="table-responsive">
             <table class="table table-hover especies-table-semprevivas">
@@ -71,7 +70,6 @@
                         </td>
                     </tr>
 
-                    <!-- Modal -->
                     <div class="modal fade especies-modal-semprevivas" id="modalEspecie{{ especie.id }}" tabindex="-1">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
@@ -80,6 +78,7 @@
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                 </div>
                                 <div class="modal-body">
+
                                     <ul class="nav nav-tabs">
                                         <li class="nav-item">
                                             <a class="nav-link active" data-bs-toggle="tab" href="#geral{{ especie.id }}">Geral</a>
@@ -94,13 +93,21 @@
                                             <a class="nav-link" data-bs-toggle="tab" href="#chaveIdentificacao{{ especie.id }}">Chave Identificação</a>
                                         </li>
                                         <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#conservacao{{ especie.id }}">Conservação</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-bs-toggle="tab" href="#distribuicao{{ especie.id }}">Distribuição</a>
+                                        </li>
+                                        <li class="nav-item">
                                             <a class="nav-link" data-bs-toggle="tab" href="#foto{{ especie.id }}">Fotos</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-bs-toggle="tab" href="#referencias{{ especie.id }}">Referências</a>
                                         </li>
                                     </ul>
+
                                     <div class="tab-content mt-3">
+
                                         <div class="tab-pane fade show active" id="geral{{ especie.id }}">
                                             <p><strong>Taxon ID:</strong> {{ especie.taxonID }}</p>
                                             <p><strong>Accepted Name Usage ID:</strong> {{ especie.acceptedNameUsageID }}</p>
@@ -110,6 +117,7 @@
                                             <p><strong>Name Published In:</strong> {{ especie.namePublishedIn }}</p>
                                             <p><strong>Name Published In Year:</strong> {{ especie.namePublishedInYear }}</p>
                                         </div>
+
                                         <div class="tab-pane fade" id="taxonomia{{ especie.id }}">
                                             <p><strong>Higher Classification:</strong> {{ especie.higherClassification }}</p>
                                             <p><strong>Kingdom:</strong> {{ especie.kingdom }}</p>
@@ -124,34 +132,46 @@
                                             <p><strong>Scientific Name Authorship:</strong> {{ especie.scientificNameAuthorship }}</p>
                                             <p><strong>Taxonomic Status:</strong> {{ especie.taxonomicStatus }}</p>
                                         </div>
-                                        <div class="tab-pane fade" id="referencias{{ especie.id }}">
-                                            <p><strong>Comentários:</strong> {{ especie.comentarios }}</p>
-                                            <p><strong>Estado:</strong>
-                                            <ul>
-                                                {% for estado in especie.estado %}
-                                                <li>{{ estado }}</li>
-                                                {% endfor %}
-                                            </ul>
-                                            </p>
-                                            <p><strong>Nomenclatural Status:</strong> {{ especie.nomenclaturalStatus }}</p>
-                                            <p><strong>Bibliographic Citation:</strong> {{ especie.bibliographicCitation }}</p>
-                                            <p><strong>References:</strong> {{ especie.references }}</p>
-                                        </div>
+
                                         <div class="tab-pane fade" id="descricaoMorfologica{{ especie.id }}">
                                             <p><strong>Descrição Morfológica:</strong> {{ especie.descricao_morfologica }}</p>
                                         </div>
+
                                         <div class="tab-pane fade" id="chaveIdentificacao{{ especie.id }}">
                                             <p><strong>Chave Identificação:</strong> {{ especie.chave_identificacao }}</p>
                                         </div>
+
+                                        <div class="tab-pane fade" id="conservacao{{ especie.id }}">
+                                            <p><strong>Estado de Conservação:</strong> {{ especie.conservacao }}</p>
+                                        </div>
+
+                                        <div class="tab-pane fade" id="distribuicao{{ especie.id }}">
+                                            <p><strong>Distribuição:</strong> {{ especie.distribuicao_geografica }}</p>
+                                        </div>
+
                                         <div class="tab-pane fade" id="foto{{ especie.id }}">
-                                            <p><strong>Foto:</strong></p>
                                             {% if especie.foto %}
                                                 <img src="{{ especie.foto.url }}" alt="Foto da espécie" class="img-fluid rounded border">
                                             {% else %}
                                                 <p class="text-muted">Nenhuma foto disponível.</p>
                                             {% endif %}
                                         </div>
+
+                                        <div class="tab-pane fade" id="referencias{{ especie.id }}">
+                                            <p><strong>Comentários:</strong> {{ especie.comentarios }}</p>
+                                            <p><strong>Estado:</strong></p>
+                                            <ul>
+                                                {% for estado in especie.estado %}
+                                                <li>{{ estado }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            <p><strong>Nomenclatural Status:</strong> {{ especie.nomenclaturalStatus }}</p>
+                                            <p><strong>Bibliographic Citation:</strong> {{ especie.bibliographicCitation }}</p>
+                                            <p><strong>References:</strong> {{ especie.references }}</p>
+                                        </div>
+
                                     </div>
+
                                     {% if user.is_authenticated and user.groups.all.0.name != 'Convidado' %}
                                     <div class="modal-footer">
                                         <a href="{% url 'editar_taxon' especie.id %}" class="btn especies-btn-primary btn-sm">
@@ -168,23 +188,26 @@
                                         </button>
                                     </div>
                                     {% endif %}
+
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        <!-- Paginação -->
         <div class="especies-pagination-semprevivas text-center">
             <div class="btn-group">
                 {% if page_obj.has_previous %}
                 <a class="btn especies-pagination-btn-semprevivas" href="?page=1">&laquo; Primeira</a>
                 <a class="btn especies-pagination-btn-semprevivas" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
                 {% endif %}
+
                 <span class="btn btn-light disabled">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
                 {% if page_obj.has_next %}
                 <a class="btn especies-pagination-btn-semprevivas" href="?page={{ page_obj.next_page_number }}">Próxima</a>
                 <a class="btn especies-pagination-btn-semprevivas" href="?page={{ page_obj.paginator.num_pages }}">Última &raquo;</a>
