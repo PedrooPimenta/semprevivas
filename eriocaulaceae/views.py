@@ -20,7 +20,22 @@ from .forms import (
     TaxonStep5Form, TaxonStep6Form, TaxonStep7Form, TaxonStep8Form, TaxonStep9Form
 )
 from .models import Taxon
+from django.views.generic.detail import DetailView
 
+
+class dados_especies(DetailView):
+    model = Taxon
+    template_name = 'dados_da_especie.html'
+    context_object_name = 'especie'
+
+    def get_queryset(self):
+        return Taxon.objects.filter(status=True).order_by('scientificName')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        especie = self.get_object()
+        context['form'] = TaxonForm(instance=especie)
+        return context    
 
 def eriocaulaceae_home(request):
     return render(request, "eriocaulaceae_home.html")
@@ -648,3 +663,4 @@ def negar_exclusao(request, pk):
 
     messages.info(request, 'Solicitação de exclusão negada. A espécie permanece ativa.')
     return redirect('listar_solicitacoes')
+

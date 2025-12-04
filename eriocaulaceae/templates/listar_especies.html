@@ -64,10 +64,10 @@
                         <td>{{ especie.genus }}</td>
                         <td>{{ especie.scientificNameAuthorship }}</td>
                         <td>
-                            <button class="btn especies-btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEspecie{{ especie.id }}">
+                            <a href="{% url 'dados_da_especie' especie.pk %}" class="btn especies-btn-primary btn-sm">
                                 Ver mais
-                            </button>
-                        </td>
+                            </a>
+</td>
                     </tr>
 
                     <div class="modal fade especies-modal-semprevivas" id="modalEspecie{{ especie.id }}" tabindex="-1">

@@ -36,5 +36,6 @@ urlpatterns = [
     path('taxon/<uuid:pk>/negar_edicao/',
          views.negar_edicao, name='negar_edicao'),
     path('negar_exclusao/<uuid:pk>/', views.negar_exclusao, name='negar_exclusao'),
+     path('erio/<uuid:pk>/', views.dados_especies.as_view(), name='dados_da_especie'),
 
 ]
