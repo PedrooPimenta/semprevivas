@@ -478,6 +478,12 @@ class TaxonWizard(LoginRequiredMixin, SessionWizardView):
         data = {}
         for form in form_list:
             data.update(form.cleaned_data)
+            scientific_name = data.get("scientificName")
+
+        if Taxon.objects.filter(scientificName__iexact=scientific_name).exists():
+            messages.error(self.request, "Já existe uma espécie cadastrada com este nome científico.")
+            return HttpResponseRedirect(reverse('adicionar_taxon'))
+        
         data['status'] = False
         data['tipo_solicitacao'] = 'cadastro'
         data['user'] = self.request.user
