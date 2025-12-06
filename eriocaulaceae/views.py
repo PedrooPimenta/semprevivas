@@ -445,7 +445,11 @@ def upload_csv(request):
                         nomenclaturalStatus=linha['nomenclaturalStatus'],
                         modified=linha['modified'],
                         bibliographicCitation=linha['bibliographicCitation'],
-                        references=linha['references']
+                        references=linha['references'],
+                        endemismo=linha['endemismo'],
+                        conservacao=linha['conservacao'],
+                        conservacao_fonte=linha['conservacao_fonte'],
+                        caule=linha['caule'],
                     )
                     taxon.save()
                 return render(request, 'sucesso.html')
@@ -476,10 +480,13 @@ class TaxonWizard(LoginRequiredMixin, SessionWizardView):
             data.update(form.cleaned_data)
         data['status'] = False
         data['tipo_solicitacao'] = 'cadastro'
+        data['user'] = self.request.user
         Taxon.objects.create(**data)
         messages.info(
             self.request, 'Cadastro enviado para análise do administrador.')
         return HttpResponseRedirect(reverse('listar_especies'))
+        
+
 
 
 @method_decorator(never_cache, name='dispatch')
@@ -540,8 +547,38 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.infraspecificEpithet = data.get('infraspecificEpithet')
             taxon.taxonRank = data.get('taxonRank')
             taxon.bibliographicCitation = data.get('bibliographicCitation')
+            taxon.descricao_morfologica = data.get('descricao_morfologica')
+            taxon.chave_identificacao = data.get('chave_identificacao')
+            taxon.comentarios = data.get('comentarios')
+
             taxon.references = data.get('references')
+            
+            taxon.estado = data.get('estado')
+            taxon.paises = data.get('paises')
+            taxon.distribuicao_biomas = data.get('distribuicao_biomas')
+            taxon.fitofisionomias = data.get('fitofisionomias')
+            taxon.distribuicoes_formacoes = data.get('distribuicoes_formacoes')
+            taxon.endemismo = data.get('endemismo')
+            taxon.conservacao = data.get('conservacao')
+            taxon.conservacao_fonte = data.get('conservacao_fonte')
+            taxon.caule = data.get('caule')
+            taxon.scientificNameAuthorship = data.get('scientificNameAuthorship')
+            taxon.taxonomicStatus = data.get('taxonomicStatus')
+            taxon.nomenclaturalStatus = data.get('nomenclaturalStatus')
+            taxon.bibliographicCitation = data.get('bibliographicCitation')
+            
+
             taxon.foto = data.get('foto')
+            taxon.foto2 = data.get('foto2')
+            taxon.foto3 = data.get('foto3')
+            taxon.foto4 = data.get('foto4')
+            taxon.foto5 = data.get('foto5')
+            taxon.foto6 = data.get('foto6')
+            taxon.foto7 = data.get('foto7')
+            taxon.foto8 = data.get('foto8')
+
+            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
+
             taxon.status = False
             taxon.tipo_solicitacao = 'edicao'
             taxon.save()

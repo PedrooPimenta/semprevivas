@@ -1,9 +1,7 @@
-
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
 {% block title %}Detalhes da Espécie - {{ especie.scientificName }}{% endblock %}
-
 
 {% block content %}
 <div class="especies-container-semprevivas container-fluid py-5">
@@ -11,221 +9,462 @@
         <div class="col-12 col-lg-11">
             <div class="card shadow especies-table-semprevivas mb-4">
                 <div class="card-body py-4">
+
                     <style>
-                        .especies-table-semprevivas p, .especies-table-semprevivas li { margin-bottom: 1rem; font-size: 1.05rem; }
-                        .especies-table-semprevivas h5 { margin-top: 1rem; margin-bottom: .75rem; }
-                        .especie-photo { max-width: 420px; }
-                        /* Tabelas com linhas pretas */
+                        .especies-table-semprevivas p,
+                        .especies-table-semprevivas li {
+                            margin-bottom: 1rem;
+                            font-size: 1.05rem;
+                        }
+                        .especies-table-semprevivas h5 {
+                            margin-top: 1rem;
+                            margin-bottom: .75rem;
+                        }
+                        .especie-photo {
+                            width: 110px;
+                            height: 110px;
+                            object-fit: cover;
+                            cursor: pointer;
+                            margin: 4px;
+                        }
                         .especies-table-semprevivas table,
                         .especies-table-semprevivas th,
                         .especies-table-semprevivas td {
                             border: 1px solid #000 !important;
                         }
-                        .especies-table-semprevivas table { border-collapse: collapse; }
-                        .especies-cat-heading { margin-top: 1.5rem; margin-bottom: .5rem; font-weight:700; color:#2E8B57; }
-                        /* Paginação por categorias */
-                        .category-page { display: none; }
-                        .category-page.active { display: block; }
-                        .category-pagination { display:flex; gap:.5rem; justify-content:center; align-items:center; margin-top:1rem; }
+                        .especies-table-semprevivas table {
+                            border-collapse: collapse;
+                        }
+                        .especies-cat-heading {
+                            margin-top: 1.5rem;
+                            margin-bottom: .5rem;
+                            font-weight: 700;
+                            color: #2E8B57;
+                        }
+                        .category-page {
+                            display: none;
+                        }
+                        .category-page.active {
+                            display: block;
+                        }
+                        .image-viewer-overlay {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            background: rgba(0, 0, 0, .85);
+                            z-index: 10000;
+                        }
+                        .image-viewer-overlay img {
+                            max-width: 90vw;
+                            max-height: 90vh;
+                        }
                     </style>
-                    <h2 class="mb-3 text-center" style="color:#2E8B57;font-weight:700;">{{ especie.scientificName }}</h2>
+
+                    <h2 class="mb-3 text-center" style="color:#2E8B57;font-weight:700;">
+                        {{ especie.scientificName }}
+                    </h2>
                     <hr>
 
-    <div class="mt-4">
-        <div id="category-pages">
-            <div class="category-page active" data-index="0">
-                <h4 class="especies-cat-heading">Geral</h4>
-                <div class="table-responsive">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr><th style="width:30%">Taxon ID</th><td class="text-break text-success">{{ especie.taxonID }}</td></tr>
-                            <tr><th>Nome Científico</th><td class="text-break text-success">{{ especie.scientificName }}</td></tr>
-                            <tr><th>Autoria Científica</th><td class="text-break">{{ especie.scientificNameAuthorship }}</td></tr>
-                            <tr><th>Nome Publicado Em</th><td class="text-break">{{ especie.namePublishedIn }}</td></tr>
-                            <tr><th>Ano de Publicação</th><td>{{ especie.namePublishedInYear }}</td></tr>
-                            <tr><th>Nome Aceito</th><td><span class="badge bg-success">{{ especie.acceptedNameUsage }}</span></td></tr>
-                            <tr><th>Status Taxonômico</th><td><span class="badge bg-info text-dark">{{ especie.taxonomicStatus }}</span></td></tr>
-                            <tr><th>Status Nomenclatural</th><td><span class="badge bg-warning text-dark">{{ especie.nomenclaturalStatus }}</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                    <div class="mt-4">
+                        <div id="category-pages">
 
-            <div class="category-page" data-index="1">
-                <h4 class="especies-cat-heading">Taxonomia</h4>
-                <div class="table-responsive">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr><th style="width:30%">Reino</th><td>{{ especie.kingdom }}</td></tr>
-                            <tr><th>Filo</th><td>{{ especie.phylum }}</td></tr>
-                            <tr><th>Classe</th><td>{{ especie.classe }}</td></tr>
-                            <tr><th>Ordem</th><td>{{ especie.order }}</td></tr>
-                            <tr><th>Família</th><td><span class="badge bg-success">{{ especie.family }}</span></td></tr>
-                            <tr><th>Gênero</th><td><span class="badge bg-primary">{{ especie.genus }}</span></td></tr>
-                            <tr><th>Epíteto Específico</th><td>{{ especie.specificEpithet }}</td></tr>
-                            <tr><th>Epíteto Infraespecífico</th><td>{{ especie.infraspecificEpithet }}</td></tr>
-                            <tr><th>Rank do Táxon</th><td>{{ especie.taxonRank }}</td></tr>
-                            <tr><th>Classificação Superior</th><td class="text-break">{{ especie.higherClassification }}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            <div class="category-page active" data-index="0">
+                                <h4 class="especies-cat-heading">Informações Taxonômicas </h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">ID na Taxonomia</th>
+                                                <td>{{ especie.taxonID|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Scientific Name</th>
+                                                <td>{{ especie.scientificName|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Scientific Name Authorship</th>
+                                                <td>{{ especie.scientificNameAuthorship|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Taxonomic Status</th>
+                                                <td>{{ especie.taxonomicStatus|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Nomenclatural Status</th>
+                                                <td>{{ especie.nomenclaturalStatus|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Taxon Rank</th>
+                                                <td>{{ especie.taxonRank|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Accepted Name Usage</th>
+                                                <td>{{ especie.acceptedNameUsage|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>ID do Nome Aceito</th>
+                                                <td>{{ especie.acceptedNameUsageID|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-            <div class="category-page" data-index="2">
-                <h4 class="especies-cat-heading">Descrição</h4>
-                <div class="table-responsive">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr><th style="width:30%">Descrição Morfológica</th><td class="text-break">{{ especie.descricao_morfologica|default:"Sem descrição disponível" }}</td></tr>
-                            <tr><th>Chave de Identificação</th><td class="text-break">{{ especie.chave_identificacao|default:"Sem chave disponível" }}</td></tr>
-                            <tr><th>Caule</th><td>{{ especie.caule|default:"Não determinado" }}</td></tr>
-                            <tr><th>Comentários</th><td class="text-break">{{ especie.comentarios|default:"Sem comentários" }}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            <div class="category-page" data-index="1">
+                                <h4 class="especies-cat-heading">Hierarquia Taxonômica</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Kingdom</th>
+                                                <td>{{ especie.kingdom|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Phylum</th>
+                                                <td>{{ especie.phylum|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Classe</th>
+                                                <td>{{ especie.classe|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Order</th>
+                                                <td>{{ especie.order|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Family</th>
+                                                <td>{{ especie.family|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Genus</th>
+                                                <td>{{ especie.genus|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Specific Epithet</th>
+                                                <td>{{ especie.specificEpithet|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Infraspecific Epithet</th>
+                                                <td>{{ especie.infraspecificEpithet|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Higher Classification</th>
+                                                <td>{{ especie.higherClassification|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-            <div class="category-page" data-index="3">
-                <h4 class="especies-cat-heading">Distribuição</h4>
-                <div class="table-responsive">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr>
-                                <th style="width:30%">Estados de Ocorrência</th>
-                                <td>
-                                    {% if especie.estado %}
-                                        <ul class="mb-0">
-                                        {% if especie.estado|stringformat:"s" == especie.estado|stringformat:"s" %}
-                                            {% load crispy_forms_tags %}
-                                            {% if "," in especie.estado or "[" in especie.estado %}
-                                                {% for estado in especie.estado %}
-                                                    <li>{{ estado }}</li>
-                                                {% endfor %}
-                                            {% else %}
-                                                <li>{{ especie.estado }}</li>
-                                            {% endif %}
-                                        {% endif %}
-                                        </ul>
-                                    {% else %}
-                                        <span class="text-muted">Nenhum estado registrado.</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr><th>Países</th><td>{% if especie.paises %}{{ especie.paises }}{% else %}<span class="text-muted">Nenhum país registrado.</span>{% endif %}</td></tr>
-                            <tr><th>Biomas</th><td>{% if especie.distribuicao_biomas %}{{ especie.distribuicao_biomas }}{% else %}<span class="text-muted">Nenhum bioma registrado.</span>{% endif %}</td></tr>
-                            <tr><th>Fitofisionomias</th><td>{% if especie.fitofisionomias %}{{ especie.fitofisionomias }}{% else %}<span class="text-muted">Nenhuma fitofisionomia registrada.</span>{% endif %}</td></tr>
-                            <tr><th>Formações Geológicas</th><td>{% if especie.distribuicoes_formacoes %}{{ especie.distribuicoes_formacoes }}{% else %}<span class="text-muted">Nenhuma formação geológica registrada.</span>{% endif %}</td></tr>
-                            <tr><th>Endemismo</th><td>{{ especie.endemismo|default:"Não especificado" }}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            <div class="category-page" data-index="2">
+                                <h4 class="especies-cat-heading">Informações de Parentesco</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Parent Name Usage</th>
+                                                <td>{{ especie.parentNameUsage|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Parent Name Usage ID</th>
+                                                <td>{{ especie.parentNameUsageID|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Original Name Usage ID</th>
+                                                <td>{{ especie.originalNameUsageID|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-            <div class="category-page" data-index="4">
-                <h4 class="especies-cat-heading">Conservação</h4>
-                <div class="table-responsive">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr><th style="width:30%">Estado de Conservação</th><td><span class="badge bg-danger">{{ especie.conservacao|default:"Não avaliado" }}</span></td></tr>
-                            <tr><th>Fonte</th><td>{{ especie.conservacao_fonte|default:"Não especificado" }}</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                            <div class="category-page" data-index="3">
+                                <h4 class="especies-cat-heading">Publicação</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Name Published In</th>
+                                                <td>{{ especie.namePublishedIn|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Name Published In Year</th>
+                                                <td>{{ especie.namePublishedInYear|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Modified</th>
+                                                <td>{{ especie.modified|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Created At</th>
+                                                <td>{{ especie.created_at|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
 
-            <div class="category-page" data-index="5">
-                <h4 class="especies-cat-heading">Referências</h4>
-                <div class="table-responsive mb-5">
-                    <table class="table mb-4">
-                        <tbody>
-                            <tr><th style="width:30%">Citação Bibliográfica</th><td class="text-break">{{ especie.bibliographicCitation|default:"Não disponível" }}</td></tr>
-                            <tr><th>Referências</th><td class="text-break">{% if especie.references %}{{ especie.references }}{% else %}<span class="text-muted">Não disponível</span>{% endif %}</td></tr>
-                            <tr><th>Foto</th><td>{% if especie.foto %}<img src="{{ especie.foto.url }}" alt="Foto da espécie" class="img-fluid rounded border shadow especie-photo">{% else %}<span class="text-muted">Sem foto</span>{% endif %}</td></tr>
-                        </tbody>
-                    </table>
+                            <div class="category-page" data-index="4">
+                                <h4 class="especies-cat-heading">Descrição e Morfologia</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Descrição Morfológica</th>
+                                                <td class="text-break">{{ especie.descricao_morfologica|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Chave de Identificação</th>
+                                                <td class="text-break">{{ especie.chave_identificacao|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Caule</th>
+                                                <td>{{ especie.get_caule_display|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Comentários</th>
+                                                <td class="text-break">{{ especie.comentarios|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="category-page" data-index="5">
+                                <h4 class="especies-cat-heading">Distribuição Geográfica</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Estado</th>
+                                                <td>{{ especie.estado|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Países</th>
+                                                <td>{{ especie.paises|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Distribuição Biomas</th>
+                                                <td>{{ especie.distribuicao_biomas|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Fitofisionomias</th>
+                                                <td>{{ especie.fitofisionomias|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Distribuições Formações</th>
+                                                <td>{{ especie.distribuicoes_formacoes|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="category-page" data-index="6">
+                                <h4 class="especies-cat-heading">Conservação e Endemismo</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Conservação</th>
+                                                <td>{{ especie.get_conservacao_display|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Fonte da Informação de Conservação</th>
+                                                <td class="text-break">{{ especie.conservacao_fonte|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Endemismo</th>
+                                                <td>{{ especie.get_endemismo_display|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status</th>
+                                                <td>{{ especie.status|yesno:"Ativo,Inativo" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="category-page" data-index="7">
+                                <h4 class="especies-cat-heading">Referências Bibliográficas</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Referências Bibliográficas</th>
+                                                <td class="text-break">{{ especie.bibliographicCitation|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Outras Referências</th>
+                                                <td class="text-break">{{ especie.references|default:"Não disponível" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="category-page" data-index="8">
+                                <h4 class="especies-cat-heading">Fotografias</h4>
+                                <div class="table-responsive mb-5">
+                                    <table class="table mb-4">
+                                        <tbody>
+                                            <tr>
+                                                <th style="width:30%">Fotos</th>
+                                                <td>
+                                                    <div class="d-flex flex-wrap">
+                                                        {% if especie.foto %}
+                                                            <img src="{{ especie.foto.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto2 %}
+                                                            <img src="{{ especie.foto2.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto2.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto3 %}
+                                                            <img src="{{ especie.foto3.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto3.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto4 %}
+                                                            <img src="{{ especie.foto4.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto4.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto5 %}
+                                                            <img src="{{ especie.foto5.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto5.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto6 %}
+                                                            <img src="{{ especie.foto6.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto6.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto7 %}
+                                                            <img src="{{ especie.foto7.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto7.url }}')">
+                                                        {% endif %}
+                                                        {% if especie.foto8 %}
+                                                            <img src="{{ especie.foto8.url }}" class="rounded border shadow especie-photo" onclick="openImageViewer('{{ especie.foto8.url }}')">
+                                                        {% endif %}
+                                                        
+                                                        {% if not especie.foto and not especie.foto2 and not especie.foto3 and not especie.foto4 and not especie.foto5 and not especie.foto6 and not especie.foto7 and not especie.foto8 %}
+                                                            <span class="text-muted">Sem fotos</span>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Localidade das Fotos</th>
+                                                <td class="text-break">{{ especie.localidade_das_fotos|default:"Não disponível" }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Usuário</th>
+                                                <td>{{ especie.user.username|default:"Desconhecido" }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="especies-pagination-semprevivas text-center" role="navigation" aria-label="Navegação por categorias">
+                                <div class="btn-group">
+                                    <button id="first-page" class="btn especies-pagination-btn-semprevivas">&laquo; Primeira</button>
+                                    <button id="prev-page" class="btn especies-pagination-btn-semprevivas">Anterior</button>
+                                    <span id="page-indicator" class="btn btn-light disabled">Página 1 de 10</span>
+                                    <button id="next-page" class="btn especies-pagination-btn-semprevivas">Próxima</button>
+                                    <button id="last-page" class="btn especies-pagination-btn-semprevivas">Última &raquo;</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            {% if user.is_authenticated and user.groups.all.0.name != 'Convidado' %}
+                                <a href="{% url 'editar_taxon' especie.pk %}" class="especies-btn-primary me-2">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a href="{% url 'historico_taxon' especie.pk %}" class="btn btn-info me-2">
+                                    <i class="fas fa-history"></i> Histórico
+                                </a>
+                                <a href="{% url 'set_especie_false' especie.pk %}" class="btn btn-danger me-2">
+                                    <i class="fas fa-trash"></i> Excluir
+                                </a>
+                            {% endif %}
+                            <a href="{% url 'listar_especies' %}" class="especies-back-btn-semprevivas">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </a>
+                        </div>
+                    </div>
+
+                    <script>
+                        (function () {
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const pages = Array.from(document.querySelectorAll('.category-page'));
+                                if (!pages.length) return;
+                                
+                                const total = pages.length;
+                                let current = 0;
+                                
+                                const firstBtn = document.getElementById('first-page');
+                                const prevBtn = document.getElementById('prev-page');
+                                const nextBtn = document.getElementById('next-page');
+                                const lastBtn = document.getElementById('last-page');
+                                const indicator = document.getElementById('page-indicator');
+                                
+                                function show(index) {
+                                    pages.forEach((p, i) => p.classList.toggle('active', i === index));
+                                    current = index;
+                                    indicator.textContent = `Página ${current + 1} de ${total}`;
+                                    
+                                    firstBtn.disabled = current === 0;
+                                    prevBtn.disabled = current === 0;
+                                    nextBtn.disabled = current === total - 1;
+                                    lastBtn.disabled = current === total - 1;
+                                    
+                                    const el = document.querySelector('.especies-table-semprevivas');
+                                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }
+                                
+                                prevBtn.addEventListener('click', function () {
+                                    if (current > 0) show(current - 1);
+                                });
+                                
+                                nextBtn.addEventListener('click', function () {
+                                    if (current < total - 1) show(current + 1);
+                                });
+                                
+                                firstBtn.addEventListener('click', function () {
+                                    show(0);
+                                });
+                                
+                                lastBtn.addEventListener('click', function () {
+                                    show(total - 1);
+                                });
+                                
+                                document.addEventListener('keydown', function (e) {
+                                    if (e.key === 'ArrowLeft') {
+                                        if (current > 0) show(current - 1);
+                                    }
+                                    if (e.key === 'ArrowRight') {
+                                        if (current < total - 1) show(current + 1);
+                                    }
+                                });
+                                
+                                show(0);
+                            });
+                        })();
+                        
+                        function openImageViewer(src) {
+                            const overlay = document.createElement('div');
+                            overlay.className = 'image-viewer-overlay';
+                            overlay.onclick = function() { overlay.remove(); };
+                            
+                            const img = document.createElement('img');
+                            img.src = src;
+                            overlay.appendChild(img);
+                            
+                            document.body.appendChild(overlay);
+                        }
+                    </script>
+
                 </div>
             </div>
         </div>
-
-        <div class="especies-pagination-semprevivas text-center" role="navigation" aria-label="Navegação por categorias">
-            <div class="btn-group">
-                <button id="first-page" class="btn especies-pagination-btn-semprevivas">&laquo; Primeira</button>
-                <button id="prev-page" class="btn especies-pagination-btn-semprevivas">Anterior</button>
-                <span id="page-indicator" class="btn btn-light disabled">Página 1 de 6</span>
-                <button id="next-page" class="btn especies-pagination-btn-semprevivas">Próxima</button>
-                <button id="last-page" class="btn especies-pagination-btn-semprevivas">Última &raquo;</button>
-            </div>
-        </div>
     </div>
-
-
-    <div class="mt-4 text-center">
-        {% if user.is_authenticated and user.groups.all.0.name != 'Convidado' %}
-        <a href="{% url 'editar_taxon' especie.pk %}" class="especies-btn-primary me-2">
-            <i class="fas fa-edit"></i> Editar
-        </a>
-        <a href="{% url 'historico_taxon' especie.pk %}" class="btn btn-info me-2">
-            <i class="fas fa-history"></i> Histórico
-        </a>
-        <a href="{% url 'set_especie_false' especie.pk %}" class="btn btn-danger me-2">
-            <i class="fas fa-trash"></i> Excluir
-        </a>
-        {% endif %}
-        <a href="{% url 'listar_especies' %}" class="especies-back-btn-semprevivas">
-            <i class="fas fa-arrow-left"></i> Voltar
-        </a>
-    </div>
-</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Paginação cliente por categorias
-        (function () {
-            document.addEventListener('DOMContentLoaded', function () {
-                const pages = Array.from(document.querySelectorAll('.category-page'));
-                if (!pages.length) return;
-                const total = pages.length;
-                let current = 0;
-
-                const firstBtn = document.getElementById('first-page');
-                const prevBtn = document.getElementById('prev-page');
-                const nextBtn = document.getElementById('next-page');
-                const lastBtn = document.getElementById('last-page');
-                const indicator = document.getElementById('page-indicator');
-
-                function show(index) {
-                    pages.forEach((p, i) => p.classList.toggle('active', i === index));
-                    current = index;
-                    indicator.textContent = `Página ${current + 1} de ${total}`;
-                    firstBtn.disabled = current === 0;
-                    prevBtn.disabled = current === 0;
-                    nextBtn.disabled = current === total - 1;
-                    lastBtn.disabled = current === total - 1;
-                    // small smooth scroll to card top
-                    const el = document.querySelector('.especies-table-semprevivas');
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-
-                prevBtn.addEventListener('click', function () { if (current > 0) show(current - 1); });
-                nextBtn.addEventListener('click', function () { if (current < total - 1) show(current + 1); });
-                firstBtn.addEventListener('click', function () { show(0); });
-                lastBtn.addEventListener('click', function () { show(total - 1); });
-
-                // keyboard navigation
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'ArrowLeft') { if (current > 0) show(current - 1); }
-                    if (e.key === 'ArrowRight') { if (current < total - 1) show(current + 1); }
-                });
-
-                // initialize
-                show(0);
-            });
-        })();
-    </script>
-</div>
-
 </div>
 {% endblock %}

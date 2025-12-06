@@ -3,6 +3,8 @@ from multiselectfield import MultiSelectField
 from simple_history.models import HistoricalRecords
 import uuid as uuid_lib
 
+from usuarios.models import CustomUser
+
 
 class Estado(models.Model):
     SIGLA_CHOICES = [
@@ -170,8 +172,18 @@ class Taxon(models.Model):
     references = models.TextField(blank=True,null=True,verbose_name="Outras Referências")
 
     # imagem 
-    foto = models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto = models.ImageField(upload_to='fotos/', blank=True, null=True,)
+    foto2 = models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto3 = models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto4 = models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto5 = models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto6= models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto7= models.ImageField(upload_to='fotos/', blank=True, null=True)
+    foto8 = models.ImageField(upload_to='fotos/', blank=True, null=True)
 
-
+    localidade_das_fotos = models.TextField(verbose_name="Descrição das Fotos", null=True, blank=True, max_length=1000)
+    
+    user= models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
 def __str__(self):
     return self.scientificName or f"Taxon ID {self.id}"
+

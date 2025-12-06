@@ -2,6 +2,8 @@ from django import forms
 from .models import Taxon
 import json
 
+from django.forms import inlineformset_factory
+
 
 class TaxonForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -391,6 +393,7 @@ class TaxonStep1Form(BaseTaxonForm):
         widgets = {
             'taxonID': forms.TextInput(attrs={'placeholder': 'Digite o ID do táxon'}),
         }
+        
 
 
 class TaxonStep2Form(BaseTaxonForm):
@@ -416,7 +419,7 @@ class TaxonStep4Form(BaseTaxonForm):
     class Meta:
         model = Taxon
         fields = ['specificEpithet', 'infraspecificEpithet',
-            'taxonRank', 'descricao_morfologica', 'chave_identificacao']
+            'taxonRank', 'descricao_morfologica', 'chave_identificacao', 'comentarios', 'endemismo', 'conservacao', 'conservacao_fonte', 'caule', 'scientificNameAuthorship', 'taxonomicStatus', 'nomenclaturalStatus']
         widgets = {
             'descricao_morfologica': forms.Textarea(attrs={'rows': 3}),
             'chave_identificacao': forms.Textarea(attrs={'rows': 3}),
@@ -426,7 +429,7 @@ class TaxonStep4Form(BaseTaxonForm):
 class TaxonStep5Form(BaseTaxonForm):
     class Meta:
         model = Taxon
-        fields = ['bibliographicCitation', 'references', 'foto']
+        fields = ['bibliographicCitation', 'references', 'foto',  'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8']
         widgets = {
             'references': forms.Textarea(attrs={'rows': 3}),
         }
@@ -788,5 +791,3 @@ class TaxonStep9Form(BaseTaxonForm):
             required=False,
             widget=forms.CheckboxSelectMultiple
         )
-
-    
