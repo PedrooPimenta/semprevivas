@@ -429,7 +429,7 @@ class TaxonStep4Form(BaseTaxonForm):
 class TaxonStep5Form(BaseTaxonForm):
     class Meta:
         model = Taxon
-        fields = ['bibliographicCitation', 'references', 'foto',  'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8']
+        fields = ['bibliographicCitation', 'references', 'foto',  'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8', 'localidade_das_fotos']
         widgets = {
             'references': forms.Textarea(attrs={'rows': 3}),
         }

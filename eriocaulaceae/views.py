@@ -576,6 +576,7 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.foto6 = data.get('foto6')
             taxon.foto7 = data.get('foto7')
             taxon.foto8 = data.get('foto8')
+            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
 
             taxon.localidade_das_fotos = data.get('localidade_das_fotos')
 
