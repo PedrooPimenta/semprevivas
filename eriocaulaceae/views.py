@@ -526,13 +526,22 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
         return kwargs
 
     def done(self, form_list, **kwargs):
-        updated = any(form.has_changed() for form in form_list)
         pk = self.kwargs.get('pk')
         taxon = get_object_or_404(Taxon, pk=pk)
+        
+        updated = any(form.has_changed() for form in form_list)
+        
         if updated:
             data = {}
             for form in form_list:
                 data.update(form.cleaned_data)
+            
+            campos_foto = ['foto', 'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8']
+            
+            fotos_originais = {}
+            for campo in campos_foto:
+                fotos_originais[campo] = getattr(taxon, campo)
+            
             taxon.taxonID = data.get('taxonID')
             taxon.acceptedNameUsageID = data.get('acceptedNameUsageID')
             taxon.parentNameUsageID = data.get('parentNameUsageID')
@@ -556,9 +565,7 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.descricao_morfologica = data.get('descricao_morfologica')
             taxon.chave_identificacao = data.get('chave_identificacao')
             taxon.comentarios = data.get('comentarios')
-
             taxon.references = data.get('references')
-            
             taxon.estado = data.get('estado')
             taxon.paises = data.get('paises')
             taxon.distribuicao_biomas = data.get('distribuicao_biomas')
@@ -571,26 +578,21 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
             taxon.scientificNameAuthorship = data.get('scientificNameAuthorship')
             taxon.taxonomicStatus = data.get('taxonomicStatus')
             taxon.nomenclaturalStatus = data.get('nomenclaturalStatus')
-            taxon.bibliographicCitation = data.get('bibliographicCitation')
+            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
             
-
-            taxon.foto = data.get('foto')
-            taxon.foto2 = data.get('foto2')
-            taxon.foto3 = data.get('foto3')
-            taxon.foto4 = data.get('foto4')
-            taxon.foto5 = data.get('foto5')
-            taxon.foto6 = data.get('foto6')
-            taxon.foto7 = data.get('foto7')
-            taxon.foto8 = data.get('foto8')
-            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
-
-            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
-
+            for campo in campos_foto:
+                valor_form = data.get(campo)
+                valor_original = fotos_originais[campo]
+                
+                if valor_form:
+                    setattr(taxon, campo, valor_form)
+                elif valor_original and not valor_form:
+                    setattr(taxon, campo, None)
+            
             taxon.status = False
             taxon.tipo_solicitacao = 'edicao'
             taxon.save()
-            messages.info(
-                self.request, 'Edição enviada para análise do administrador.')
+            messages.success(self.request, 'Edição enviada para  análise do administrador.')
         else:
             messages.info(self.request, 'Nenhuma mudança detectada.')
         return HttpResponseRedirect(reverse('listar_especies'))
