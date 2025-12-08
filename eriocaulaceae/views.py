@@ -191,15 +191,12 @@ def apagar_especie(request, especie_id):
 @login_required
 def toggle_status(request, pk):
     taxon = get_object_or_404(Taxon, pk=pk)
-    # Se for uma solicitação de exclusão e o admin aprovar (status passa de False -> aprovar),
-    # devemos remover o objeto (aprovação da exclusão). Caso contrário apenas alternar o status.
+
     if taxon.tipo_solicitacao == 'exclusao' and taxon.status is False:
-        # aprovar exclusão: deletar
         taxon.delete()
         messages.info(request, 'Exclusão aprovada. Espécie removida.')
     else:
         taxon.status = not taxon.status
-        # se estamos aprovando (status True) removemos o tipo_solicitacao
         if taxon.status:
             taxon.tipo_solicitacao = None
         taxon.save()
@@ -238,8 +235,7 @@ def list_solicitacoes(request):
                         'new': change.new
                     })
 
-        # tenta encontrar no histórico um entry cujo campo tipo_solicitacao corresponda
-        # ao tipo atual e que tenha history_user informado
+      
         historico_all = s.history.order_by('-history_date')
         for h in historico_all:
             if getattr(h, 'history_user', None) is None:
@@ -248,7 +244,6 @@ def list_solicitacoes(request):
                 usuario_solicitacao = getattr(h, 'history_user')
                 break
 
-        # se não encontrou correspondência por tipo, pega primeiro history_user não nulo
         if usuario_solicitacao is None:
             for h in historico_all:
                 if getattr(h, 'history_user', None):
@@ -270,12 +265,7 @@ def list_solicitacoes(request):
 def minhas_solicitacoes(request):
     if request.user.groups.filter(name='Convidado').exists():
         return render(request, 'access_denied.html', status=403)
-    """Mostra para o pesquisador as solicitações que ele fez e o status de cada uma.
-
-    Critérios usados:
-    - Filtra apenas o histórico do usuário atual no banco de dados (otimizado).
-    - Para cada histórico cria um registro com: taxon, tipo_solicitacao (cadastro/edicao/exclusao), data, e status atual do objeto (Aprovado/Negado/Pendente).
-    """
+ 
     usuario = request.user
     resultados = []
     
@@ -694,6 +684,8 @@ def set_especie_false(request, especie_id):
         especie.tipo_solicitacao = 'exclusao'
         especie.status = False
         especie.save()
+        messages.info(
+            request, 'Solicitação de exclusão enviada para análise do administrador.')
         return redirect('listar_especies')
     return render(request, 'apagar_especie.html', {'especie': especie})
 
