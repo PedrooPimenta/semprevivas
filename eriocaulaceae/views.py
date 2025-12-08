@@ -519,72 +519,44 @@ class EditTaxonWizard(LoginRequiredMixin, SessionWizardView):
         pk = self.kwargs.get('pk')
         taxon = get_object_or_404(Taxon, pk=pk)
         
-        updated = any(form.has_changed() for form in form_list)
+        updated = False
+        
+        campos_foto = ['foto', 'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8']
+        
+        fotos_originais = {}
+        for campo in campos_foto:
+            fotos_originais[campo] = getattr(taxon, campo)
+        
+        for form in form_list:
+            for field_name in form.changed_data:
+                value = form.cleaned_data.get(field_name)
+                
+                if isinstance(value, str) and value.strip() == "":
+                    value = None
+                
+                current_value = getattr(taxon, field_name)
+                
+                if field_name in campos_foto:
+                    if value and current_value and value.name == current_value.name:
+                        continue
+                
+                if current_value != value:
+                    setattr(taxon, field_name, value)
+                    updated = True
+        
+        for campo in campos_foto:
+            if campo not in [field for form in form_list for field in form.changed_data]:
+                valor_original = fotos_originais[campo]
+                setattr(taxon, campo, valor_original)
         
         if updated:
-            data = {}
-            for form in form_list:
-                data.update(form.cleaned_data)
-            
-            campos_foto = ['foto', 'foto2', 'foto3', 'foto4', 'foto5', 'foto6', 'foto7', 'foto8']
-            
-            fotos_originais = {}
-            for campo in campos_foto:
-                fotos_originais[campo] = getattr(taxon, campo)
-            
-            taxon.taxonID = data.get('taxonID')
-            taxon.acceptedNameUsageID = data.get('acceptedNameUsageID')
-            taxon.parentNameUsageID = data.get('parentNameUsageID')
-            taxon.originalNameUsageID = data.get('originalNameUsageID')
-            taxon.scientificName = data.get('scientificName')
-            taxon.acceptedNameUsage = data.get('acceptedNameUsage')
-            taxon.parentNameUsage = data.get('parentNameUsage')
-            taxon.namePublishedIn = data.get('namePublishedIn')
-            taxon.namePublishedInYear = data.get('namePublishedInYear')
-            taxon.higherClassification = data.get('higherClassification')
-            taxon.kingdom = data.get('kingdom')
-            taxon.phylum = data.get('phylum')
-            taxon.classe = data.get('classe')
-            taxon.order = data.get('order')
-            taxon.family = data.get('family')
-            taxon.genus = data.get('genus')
-            taxon.specificEpithet = data.get('specificEpithet')
-            taxon.infraspecificEpithet = data.get('infraspecificEpithet')
-            taxon.taxonRank = data.get('taxonRank')
-            taxon.bibliographicCitation = data.get('bibliographicCitation')
-            taxon.descricao_morfologica = data.get('descricao_morfologica')
-            taxon.chave_identificacao = data.get('chave_identificacao')
-            taxon.comentarios = data.get('comentarios')
-            taxon.references = data.get('references')
-            taxon.estado = data.get('estado')
-            taxon.paises = data.get('paises')
-            taxon.distribuicao_biomas = data.get('distribuicao_biomas')
-            taxon.fitofisionomias = data.get('fitofisionomias')
-            taxon.distribuicoes_formacoes = data.get('distribuicoes_formacoes')
-            taxon.endemismo = data.get('endemismo')
-            taxon.conservacao = data.get('conservacao')
-            taxon.conservacao_fonte = data.get('conservacao_fonte')
-            taxon.caule = data.get('caule')
-            taxon.scientificNameAuthorship = data.get('scientificNameAuthorship')
-            taxon.taxonomicStatus = data.get('taxonomicStatus')
-            taxon.nomenclaturalStatus = data.get('nomenclaturalStatus')
-            taxon.localidade_das_fotos = data.get('localidade_das_fotos')
-            
-            for campo in campos_foto:
-                valor_form = data.get(campo)
-                valor_original = fotos_originais[campo]
-                
-                if valor_form:
-                    setattr(taxon, campo, valor_form)
-                elif valor_original and not valor_form:
-                    setattr(taxon, campo, None)
-            
             taxon.status = False
             taxon.tipo_solicitacao = 'edicao'
             taxon.save()
-            messages.success(self.request, 'Edição enviada para  análise do administrador.')
+            messages.success(self.request, 'Edição enviada para análise do administrador.')
         else:
             messages.info(self.request, 'Nenhuma mudança detectada.')
+        
         return HttpResponseRedirect(reverse('listar_especies'))
 
 
